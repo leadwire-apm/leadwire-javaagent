@@ -26,7 +26,7 @@ eclipse {
 }
 
 // We have multiple subprojects - but we do not want all of them in our JAR files.
-def mainSubprojects = [project(':kieker-common'), project(':kieker-monitoring'), project(':kieker-analysis'), project(':kieker-tools')]
+def mainSubprojects = [project(':leadwire-common'), project(':leadwire-monitoring')]
 
 // better use subprojects to avoid if-then-else in sourceSets
 allprojects {
@@ -187,7 +187,7 @@ allprojects {
     // Those are some dependencies which are needed by all submodules
     dependencies {
         checkstyle resolveLibrary('**/checkstyle-*/**/*.jar')
-        checkstyle project(':kieker-checkstyle-extension')
+        checkstyle project(':leadwire-checkstyle-extension')
 
         findbugs resolveLibrary("**/findbugs-$fbVersion/lib/*.jar")
         
@@ -833,7 +833,7 @@ task enableRTests() {
 }
 distribute.mustRunAfter enableRTests
 
-task jenkinsBuild(dependsOn: [mainJar, emfJar, aspectJJar]) {
+task jenkinsBuild(group: 'jenkinsBuild', dependsOn: [aspectJJar]) {
     description = 'Builds and tests the JAR files of the Kieker Framework'
 }
 

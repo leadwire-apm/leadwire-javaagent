@@ -1,8 +1,5 @@
-rootProject.name = 'kieker'
+rootProject.name = 'leadwire'
 
-// Kieker's subprojects:
-include 'kieker-common', 'kieker-monitoring', 'kieker-analysis', 'kieker-tools', 
-		'kieker-checkstyle-extension',
-		'kieker-examples',  
-		'kieker-documentation:userguide'
+// leadwire's subprojects:
+include 'leadwire-common', 'leadwire-monitoring', 'leadwire-checkstyle-extension'
 		

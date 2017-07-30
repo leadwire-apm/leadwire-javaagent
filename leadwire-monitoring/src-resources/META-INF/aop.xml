@@ -1,0 +1,13 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.aspectj.org/dtd/aspectj_1_5_0.dtd">
+<aspectj>
+  <weaver options="-Xset:weaveJavaxPackages=true">
+    <!-- Example instrumentation for the myBatis JPetStore -->
+    <include within="org.mybatis.jpetstore..*" />    
+    <!--include within="net.sourceforge.stripes.controller..*"/-->
+    <include within="javax.servlet.http.HttpServlet"/>
+  </weaver>  
+  <aspects>
+    <!-- Use the aspect directives to specify the aspect(s) to use (typically only one). -->
+    <aspect name="kieker.monitoring.probe.aspectj.operationExecution.OperationExecutionAspectFullServlet"/>
+  </aspects>
+</aspectj>

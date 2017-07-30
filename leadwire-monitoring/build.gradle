@@ -2,7 +2,7 @@ apply plugin: 'eclipse'
 apply plugin: "com.github.hauner.jarTest"
 
 dependencies {
-	compile project(':kieker-common')
+	compile project(':leadwire-common')
 	
 	compile resolveLibrary('amqp-client-3.5.3.jar')
 	compile resolveLibrary('aspectjweaver-*.jar')
@@ -25,8 +25,8 @@ dependencies {
 	compile resolveLibrary('framework-libs/spring/spring-core-*.jar')
 	compile resolveLibrary('framework-libs/spring/aopalliance-*.jar')
 
-	// this project depends on the tests of kieker-common, e.g., it requires the class AbstractKiekerTest
-	testCompile project (path: ':kieker-common', configuration: 'testArchives')
+	// this project depends on the tests of leadwire-common, e.g., it requires the class AbstractKiekerTest
+	testCompile project (path: ':leadwire-common', configuration: 'testArchives')
 	testCompile resolveLibrary('framework-libs/spring/spring-beans-*.jar')
 	
 	testRuntime resolveLibrary('framework-libs/cxf/wsdl4j-*.jar')
@@ -67,7 +67,7 @@ task iajc(dependsOn: classes) {
                 fileset(dir: '../lib/framework-libs/jersey', includes: "jersey-client-1.19.jar")
                 fileset(dir: '../lib/framework-libs/jersey', includes: "jersey-apache-client4-1.19.jar")
 				
-				pathElement(location: project(':kieker-common').sourceSets.main.output.classesDir)
+				pathElement(location: project(':leadwire-common').sourceSets.main.output.classesDir)
                 pathElement(location: sourceSets.main.output.classesDir)
             }
         }
