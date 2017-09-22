@@ -37,6 +37,10 @@ public final class StateController extends AbstractController implements IStateC
 	private final String hostname;
 	private final AtomicInteger experimentId = new AtomicInteger(0);
 	private final boolean debug;
+	private volatile boolean rumEnable;
+	private final String rumServer;
+
+
 
 	private IStateListener stateListener;
 
@@ -52,6 +56,8 @@ public final class StateController extends AbstractController implements IStateC
 		this.experimentId.set(configuration.getIntProperty(ConfigurationFactory.EXPERIMENT_ID));
 		this.monitoringEnabled = configuration.getBooleanProperty(ConfigurationFactory.MONITORING_ENABLED);
 		this.debug = configuration.getBooleanProperty(ConfigurationFactory.DEBUG);
+		this.rumServer = configuration.getStringProperty(ConfigurationFactory.RUM_SERVER);
+		this.rumEnable = configuration.getBooleanProperty(ConfigurationFactory.RUM_ENABLE);
 		String hostnameTmp = configuration.getStringProperty(ConfigurationFactory.HOST_NAME);
 		if (hostnameTmp.length() == 0) {
 			hostnameTmp = "<UNKNOWN>";
@@ -93,6 +99,13 @@ public final class StateController extends AbstractController implements IStateC
 		sb.append(this.hostname);
 		sb.append("'; experimentID: '");
 		sb.append(this.getExperimentId());
+		if ( this.isRumEnable() ) {
+		sb.append("'; rum enabled ;'");
+		sb.append("'; RumServer: '");
+		sb.append(this.getRumServer());
+		}else {
+		sb.append("'; rum disabled ;'");	
+		}
 		sb.append("'\n");
 		return sb.toString();
 	}
@@ -188,4 +201,23 @@ public final class StateController extends AbstractController implements IStateC
 	public void setStateListener(final IStateListener stateListener) {
 		this.stateListener = stateListener;
 	}
+
+	@Override
+	public String getRumServer() {
+		return rumServer;
+	}
+
+	@Override
+	public boolean isRumEnable() {
+		return rumEnable;
+	}
+	
+	@Override
+	public final boolean disableRum() {
+		LOG.info("Disabling Rum");
+		this.rumEnable = false;
+		return true;
+	}
+	
+	
 }

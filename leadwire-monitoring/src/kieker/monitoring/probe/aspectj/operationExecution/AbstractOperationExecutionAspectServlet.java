@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2015 Kieker Project (http://kieker-monitoring.net)
+ * Copyright 2017 LeadWire (http://leadwire-apm.com)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,46 +19,158 @@ package kieker.monitoring.probe.aspectj.operationExecution;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kieker.monitoring.core.controller.IMonitoringController;
+import kieker.monitoring.core.controller.MonitoringController;
+import kieker.monitoring.core.registry.ControlFlowRegistry;
+import kieker.monitoring.core.registry.SessionRegistry;
+import kieker.monitoring.probe.aspectj.operationExecution.AbstractOperationExecutionAspect;
+import kieker.monitoring.writer.tcp.DualSocketTcpWriter;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
-import kieker.monitoring.core.controller.IMonitoringController;
-import kieker.monitoring.core.controller.MonitoringController;
-import kieker.monitoring.core.registry.SessionRegistry;
-
 /**
- * @author Andre van Hoorn, Jan Waller
+ * @author Wassim Dhib
  * 
- * @since 1.3
+ * @since 1.0
  */
 @Aspect
 public abstract class AbstractOperationExecutionAspectServlet extends AbstractOperationExecutionAspect {
-
+	
+	private static final ControlFlowRegistry CFREGISTRY = ControlFlowRegistry.INSTANCE;
 	private static final SessionRegistry SESSIONREGISTRY = SessionRegistry.INSTANCE;
 	private static final IMonitoringController CTRLINST = MonitoringController.getInstance();
-
+	
 	@Pointcut
 	public abstract void monitoredServlet(final HttpServletRequest request, final HttpServletResponse response);
 
 	@Around("monitoredServlet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) && notWithinKieker()")
-	public Object servlet(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
-		if (!CTRLINST.isMonitoringEnabled()) {
-			return thisJoinPoint.proceed();
+public Object servlet(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
+if (!CTRLINST.isMonitoringEnabled()) {
+	return thisJoinPoint.proceed();
+}
+if (!CTRLINST.isProbeActivated(this.signatureToLongString(thisJoinPoint.getSignature()))) {
+	return thisJoinPoint.proceed();
+}
+final HttpServletRequest req = (HttpServletRequest) thisJoinPoint.getArgs()[0];
+final String sessionId = (req != null) ? req.getSession(true).getId() : null; // NOPMD (assign null) // NOCS (inline cond)
+	SESSIONREGISTRY.storeThreadLocalSessionId(sessionId);
+
+	
+	Object retVal;
+
+	long traceId = CFREGISTRY.recallThreadLocalTraceId(); // traceId, -1 if entry point
+
+
+
+	try {
+		final HttpServletResponse rep = (HttpServletResponse) thisJoinPoint.getArgs()[1];
+		HtmlResponseWrapper capturingResponseWrapper = new HtmlResponseWrapper(
+				(HttpServletResponse) rep);
+		Object[] arg0 = {req,capturingResponseWrapper};
+		retVal = thisJoinPoint.proceed(arg0);
+		
+		if (CTRLINST.isRumEnable()){
+			final String rumServer = CTRLINST.getRumServer();
+
+		String isBeaconed = null;
+		String content = capturingResponseWrapper.getCaptureAsString();
+		StringBuilder _sb = new StringBuilder(content);
+		
+		if (rep.getContentType() != null
+				&& rep.getContentType().contains("text/html")) {			
+			if (content.contains("boomerang") ) 
+			{
+				isBeaconed="true";
+			}
+			if ( isBeaconed == null ) {								
+				String rum= "<script src=\"http://"+rumServer+"/boomerang-master/boomerang.js\"></script> "
+						+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/rt.js\"></script> "
+						+ "<script type=\"text/javascript\" > "
+						+ "  BOOMR.init({ "
+						+ "	traceid: \""+traceId+"\","
+						+ "	sessionid: \""+sessionId+"\","
+						+ "      beacon_url: \"http://"+rumServer+"/\" "
+						+ " }); "
+						+ "</script>  ";										
+						_sb.insert(0, rum );
+						rep.setContentLength(_sb.toString().length());				
+					}				
+				}
+				rep.getWriter().write(_sb.toString());		
 		}
-		if (!CTRLINST.isProbeActivated(this.signatureToLongString(thisJoinPoint.getSignature()))) {
-			return thisJoinPoint.proceed();
+		
+			} finally {
+				SESSIONREGISTRY.unsetThreadLocalSessionId();
+			}
+			return retVal;
+			
+}
+
+
+
+@Pointcut
+public abstract void monitoredServletservice(final HttpServletRequest request, final HttpServletResponse response);
+
+@Around("monitoredServletservice(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) && notWithinKieker()")
+public Object servletservice(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
+if (!CTRLINST.isMonitoringEnabled()) {
+	return thisJoinPoint.proceed();
+}
+if (!CTRLINST.isProbeActivated(this.signatureToLongString(thisJoinPoint.getSignature()))) {
+	return thisJoinPoint.proceed();
+}
+final HttpServletRequest req = (HttpServletRequest) thisJoinPoint.getArgs()[0];
+final String sessionId = (req != null) ? req.getSession(true).getId() : null; // NOPMD (assign null) // NOCS (inline cond)
+SESSIONREGISTRY.storeThreadLocalSessionId(sessionId);
+Object retVal;
+
+long traceId = CFREGISTRY.recallThreadLocalTraceId(); // traceId, -1 if entry point
+
+
+
+try {
+	final HttpServletResponse rep = (HttpServletResponse) thisJoinPoint.getArgs()[1];
+	HtmlResponseWrapper capturingResponseWrapper = new HtmlResponseWrapper(
+			(HttpServletResponse) rep);
+	Object[] arg0 = {req,capturingResponseWrapper};
+	retVal = thisJoinPoint.proceed(arg0);
+	
+	if (CTRLINST.isRumEnable()){
+		final String rumServer = CTRLINST.getRumServer();
+
+	String isBeaconed = null;
+	String content = capturingResponseWrapper.getCaptureAsString();
+	StringBuilder _sb = new StringBuilder(content);
+	
+	if (rep.getContentType() != null
+			&& rep.getContentType().contains("text/html")) {			
+		if (content.contains("boomerang") ) 
+		{
+			isBeaconed="true";
 		}
-		final HttpServletRequest req = (HttpServletRequest) thisJoinPoint.getArgs()[0];
-		final String sessionId = (req != null) ? req.getSession(true).getId() : null; // NOPMD (assign null) // NOCS (inline cond)
-		SESSIONREGISTRY.storeThreadLocalSessionId(sessionId);
-		Object retVal;
-		try {
-			retVal = thisJoinPoint.proceed();
+		if ( isBeaconed == null ) {								
+			String rum= "<script src=\"http://"+rumServer+"/boomerang-master/boomerang.js\"></script> "
+					+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/rt.js\"></script> "
+					+ "<script type=\"text/javascript\" > "
+					+ "  BOOMR.init({ "
+					+ "	traceid: \""+traceId+"\","
+					+ "	sessionid: \""+sessionId+"\","
+					+ "      beacon_url: \"http://"+rumServer+"/\" "
+					+ " }); "
+					+ "</script>  ";										
+					_sb.insert(0, rum );
+					rep.setContentLength(_sb.toString().length());				
+				}				
+			}
+			rep.getWriter().write(_sb.toString());		
+	}
+	
 		} finally {
 			SESSIONREGISTRY.unsetThreadLocalSessionId();
 		}
 		return retVal;
-	}
+	}	
 }

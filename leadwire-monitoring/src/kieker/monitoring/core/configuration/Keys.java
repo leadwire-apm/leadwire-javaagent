@@ -74,5 +74,8 @@ interface Keys { // NOPMD NOCS (static list)
 	public static final String ADAPTIVE_MONITORING_CONFIG_FILE_READ_INTERVALL = PREFIX + "adaptiveMonitoring.readInterval";
 	public static final String ADAPTIVE_MONITORING_MAX_CACHE_SIZE = PREFIX + "adaptiveMonitoring.maxCacheSize";
 	public static final String ADAPTIVE_MONITORING_BOUNDED_CACHE_BEHAVIOUR = PREFIX + "adaptiveMonitoring.boundedCacheBehaviour";
+	public static final String RUM_SERVER = PREFIX + "rumServer";
+	public static final String RUM_ENABLE = PREFIX + "rumEnable";
+
 
 }

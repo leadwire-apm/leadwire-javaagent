@@ -136,4 +136,34 @@ public interface IStateController {
 	 * @since 1.6
 	 */
 	public abstract boolean isDebug();
+
+	
+	/**
+	 * Disables real user monitoring.
+	 * 
+	 * If rum is disabled, the javascript injection simply pauses.
+	 * 
+	 * @return true if rum is disabled, false otherwise
+	 * 
+	 * @since 1.13
+	 */
+	boolean disableRum();
+	
+	
+	/**
+	 * Is real user monitoring enabled
+	 *  
+	 * @return true if rum is enabled, false otherwise
+	 * 
+	 * @since 1.13
+	 */
+	boolean isRumEnable();
+
+	
+	/**
+	 * returns the dns adress of rum server
+	 *  
+	 * @since 1.13
+	 */
+	String getRumServer();
 }

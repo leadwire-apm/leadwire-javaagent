@@ -19,6 +19,8 @@ package kieker.monitoring.probe.aspectj.operationExecution;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import kieker.monitoring.probe.aspectj.operationExecution.AbstractOperationExecutionAspectServlet;
+
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
@@ -44,7 +46,14 @@ public class OperationExecutionAspectFullServlet extends AbstractOperationExecut
 	}
 
 	@Override
-	@Pointcut("execution(* *(..)) || execution(new(..))")
+	@Pointcut("execution(* *.service*(..)) && args(request,response)")
+	public void monitoredServletservice(final HttpServletRequest request, final HttpServletResponse response) {
+		// Aspect Declaration (MUST be empty)
+	}
+	
+
+	@Override
+	@Pointcut("execution(* *(..))")
 	public void monitoredOperation() {
 		// Aspect Declaration (MUST be empty)
 	}
