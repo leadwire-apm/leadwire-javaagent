@@ -19,7 +19,7 @@ jdk:
 deploy:
   provider: releases
   api_key: $GITHUB_OAUTH_TOKEN
-  file: "build/leadwire-1.13-SNAPSHOT-aspectj.jar"
+  file: "build/libs/leadwire-1.13-SNAPSHOT-aspectj.jar"
   skip_cleanup: true
   on:
     tags: true
