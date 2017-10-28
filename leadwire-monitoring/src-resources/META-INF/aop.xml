@@ -3,11 +3,11 @@
   <weaver options="-Xset:weaveJavaxPackages=true">
     <!-- Example instrumentation for the myBatis JPetStore -->
     <include within="org.mybatis.jpetstore..*" />    
-    <!--include within="net.sourceforge.stripes.controller..*"/-->
+    <include within="org.postgresql.jdbc.PgStatement" />
     <include within="javax.servlet.http.HttpServlet"/>
   </weaver>  
   <aspects>
     <!-- Use the aspect directives to specify the aspect(s) to use (typically only one). -->
-    <aspect name="kieker.monitoring.probe.aspectj.operationExecution.OperationExecutionAspectFullServlet"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.LeadWireOpexAspect"/>
   </aspects>
 </aspectj>

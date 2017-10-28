@@ -65,6 +65,7 @@ public abstract class AbstractMonitoringRecord implements IMonitoringRecord {
 		CACHED_KIEKERRECORDS.put("kieker.common.record.MemSwapUsageRecord", kieker.common.record.system.MemSwapUsageRecord.class);
 		CACHED_KIEKERRECORDS.put("kieker.common.record.ResourceUtilizationRecord", kieker.common.record.system.ResourceUtilizationRecord.class);
 		CACHED_KIEKERRECORDS.put("kieker.common.record.OperationExecutionRecord", kieker.common.record.controlflow.OperationExecutionRecord.class);
+		CACHED_KIEKERRECORDS.put("kieker.common.record.JDBCOperationExecutionRecord", kieker.common.record.jdbc.JDBCOperationExecutionRecord.class);
 		CACHED_KIEKERRECORDS.put("kieker.common.record.BranchingRecord", kieker.common.record.controlflow.BranchingRecord.class);
 		CACHED_KIEKERRECORDS.put("kieker.monitoring.core.registry.RegistryRecord", kieker.common.record.misc.RegistryRecord.class);
 		CACHED_KIEKERRECORDS.put("kieker.common.record.flow.trace.Trace", kieker.common.record.flow.trace.TraceMetadata.class);
