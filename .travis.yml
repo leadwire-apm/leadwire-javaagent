@@ -1,5 +1,9 @@
 language: java
 
+dist: precise
+ 
+sudo: required
+
 before_install:
  - chmod +x ./gradlew
  
