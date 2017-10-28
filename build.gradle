@@ -615,6 +615,15 @@ task aspectJJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
     from fileTree(dir: 'lib', include: 'aspectjweaver-*.jar').collect {
         zipTree(it)
     }
+    from fileTree(dir: 'lib', include: 'postgresql*.jar').collect {
+        zipTree(it)
+    }
+    from fileTree(dir: 'lib/sigar', include: 'sigar*.jar').collect {
+        zipTree(it)
+    }
+    from fileTree(dir: 'lib', include: 'servlet-api*.jar').collect {
+        zipTree(it)
+    }
     from file("lib/aspectjweaver-${libAspectjVersion}.LICENSE")
 
     from fileTree("lib/jctools-core-${libJctoolsVersion}.jar").collect { zipTree(it) }
