@@ -9,6 +9,7 @@ before_install:
  
 before_script:
   - chmod +x gradlew
+  - echo "We can put normal shell commands here"
   
 jdk:
   - oraclejdk8
