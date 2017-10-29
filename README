@@ -2,5 +2,6 @@
 
 - Get Gradle support by installing the Eclipse plugin "Buildship: ..." in version 2 or above.
 - If you have already imported leadwire-javaagent in Eclipse, delete it
-- Import leadwire-javaagent in Eclipse by importing it as gradle project (Eclipse will also import all submodules automatically)
+- Use git to clone leadwire-javaagent from the web url :  https://github.com/leadwire-apm/leadwire-javaagent.git
+- In Eclipse, right click button on the project, then "Configure" -> "Add Gradle nature"
 - Whenever you change a build.gradle file, regenerate the .project and .classpath files for Eclipse by using "Gradle->Refresh Gradle Project"
