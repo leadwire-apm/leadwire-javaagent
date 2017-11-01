@@ -26,4 +26,4 @@ deploy:
 
 
 script:
-    - gradle jenkinsBuild -x test
+    - gradle TravisCI -x test
