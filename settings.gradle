@@ -1,5 +1,5 @@
 rootProject.name = 'leadwire'
 
 // leadwire's subprojects:
-include 'leadwire-common', 'leadwire-monitoring', 'leadwire-checkstyle-extension'
+include 'leadwire-common', 'leadwire-monitoring', 'leadwire-checkstyle-extension', 'leadwire-tools'
 		

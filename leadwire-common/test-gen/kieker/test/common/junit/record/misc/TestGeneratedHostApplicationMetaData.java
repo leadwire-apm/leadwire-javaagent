@@ -53,7 +53,7 @@ public class TestGeneratedHostApplicationMetaData extends AbstractGeneratedKieke
 			// check values
 			Assert.assertEquals("HostApplicationMetaData.systemName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getSystemName());
 			Assert.assertEquals("HostApplicationMetaData.ipAddress values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getIpAddress());
-			Assert.assertEquals("HostApplicationMetaData.hostName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getHostName());
+			Assert.assertEquals("HostApplicationMetaData.hostName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getHostname());
 			Assert.assertEquals("HostApplicationMetaData.applicationName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getApplicationName());
 			
 			Object[] values = record.toArray();
@@ -101,7 +101,7 @@ public class TestGeneratedHostApplicationMetaData extends AbstractGeneratedKieke
 			// check values
 			Assert.assertEquals("HostApplicationMetaData.systemName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getSystemName());
 			Assert.assertEquals("HostApplicationMetaData.ipAddress values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getIpAddress());
-			Assert.assertEquals("HostApplicationMetaData.hostName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getHostName());
+			Assert.assertEquals("HostApplicationMetaData.hostName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getHostname());
 			Assert.assertEquals("HostApplicationMetaData.applicationName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getApplicationName());
 		}
 	}
@@ -118,7 +118,7 @@ public class TestGeneratedHostApplicationMetaData extends AbstractGeneratedKieke
 			// check values
 			Assert.assertEquals("HostApplicationMetaData.systemName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getSystemName());
 			Assert.assertEquals("HostApplicationMetaData.ipAddress values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getIpAddress());
-			Assert.assertEquals("HostApplicationMetaData.hostName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getHostName());
+			Assert.assertEquals("HostApplicationMetaData.hostName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getHostname());
 			Assert.assertEquals("HostApplicationMetaData.applicationName values are not equal.", STRING_VALUES.get(i % STRING_VALUES.size()) == null?"":STRING_VALUES.get(i % STRING_VALUES.size()), record.getApplicationName());
 		}
 	}

@@ -1,13 +1,35 @@
+/***************************************************************************
+ * Copyright 2017 Lead Wire (http://leadwire-apm.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
+
 package kieker.monitoring.probe.aspectj.operationExecution;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+/**
+ * @author Wassim Dhib
+ * 
+ * @since 1.13
+ */ 
 
 
 public class HtmlResponseWrapper extends HttpServletResponseWrapper {
@@ -16,9 +38,9 @@ public class HtmlResponseWrapper extends HttpServletResponseWrapper {
 	private ServletOutputStream output;
 	private PrintWriter writer;
 
-	public HtmlResponseWrapper(HttpServletResponse response) {
-		super(response);
-		capture = new ByteArrayOutputStream(response.getBufferSize());
+	public HtmlResponseWrapper(HttpServletResponse rep) {		
+		super(rep);
+		capture = new ByteArrayOutputStream(rep.getBufferSize());
 	}
 
 	@Override

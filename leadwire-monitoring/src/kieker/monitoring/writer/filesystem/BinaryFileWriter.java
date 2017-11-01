@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2015 Kieker Project (http://kieker-monitoring.net)
+ * Copyright 2017 Kieker Project (http://kieker-monitoring.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -178,5 +178,18 @@ public class BinaryFileWriter extends AbstractMonitoringWriter implements IRegis
 	@Override
 	public FilenameFilter getFileNameFilter() {
 		return FileExtensionFilter.BIN;
+	}
+
+	@Override
+	public String toString() {
+		final String configInfo = super.toString();
+		final StringBuilder builder = new StringBuilder()
+			.append(configInfo)
+			.append("\n\t")
+			.append("Internal properties:")
+			.append("\n\t\t")
+			.append("Log location: ")
+			.append(this.logFolder);
+		return builder.toString();
 	}
 }

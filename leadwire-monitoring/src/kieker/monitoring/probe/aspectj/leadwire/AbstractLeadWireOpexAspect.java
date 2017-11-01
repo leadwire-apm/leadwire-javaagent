@@ -16,7 +16,8 @@
 
 package kieker.monitoring.probe.aspectj.leadwire;
 
-import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Method;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -38,7 +39,7 @@ import kieker.monitoring.timer.ITimeSource;
 /**
  * @author Wassim Dhib
  * 
- * @since 1.0
+ * @since 1.13
  */ 
 
 
@@ -54,7 +55,7 @@ public abstract class AbstractLeadWireOpexAspect extends AbstractOperationExecut
 
 
 	@Pointcut
-	public abstract void monitoredServletservice(final HttpServletRequest request, final HttpServletResponse response);
+	public abstract void monitoredServletservice(final javax.servlet.http.HttpServletRequest request, final HttpServletResponse response);
 
 	@Around("monitoredServletservice(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) && notWithinKieker()")
 	public Object servletservice(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
@@ -64,8 +65,19 @@ public abstract class AbstractLeadWireOpexAspect extends AbstractOperationExecut
 	if (!CTRLINST.isProbeActivated(this.signatureToLongString(thisJoinPoint.getSignature()))) {
 		return thisJoinPoint.proceed();
 	}
-	final HttpServletRequest req = (HttpServletRequest) thisJoinPoint.getArgs()[0];
-	final String sessionId = (req != null) ? req.getSession(true).getId() : null; // NOPMD (assign null) // NOCS (inline cond)
+	final Object req = (Object) thisJoinPoint.getArgs()[0];
+	//final String sessionId = (req != null) ? req.getSession(true).getId() : null; // NOPMD (assign null) // NOCS (inline cond)
+	
+
+	 Method aMethod = req.getClass().getMethod("getSession", boolean.class);
+	 Object aSession = (Object) aMethod.invoke(req, true);
+		 
+	 Method aMethod2 = aSession.getClass().getMethod("getId");
+	 String aId = (String) aMethod2.invoke(aSession);	 
+
+	final String sessionId = (req != null) ? aId : null; // NOPMD (assign null) // NOCS (inline cond)
+		
+	
 	SESSIONREGISTRY.storeThreadLocalSessionId(sessionId);
 	Object retVal;
 
@@ -73,8 +85,8 @@ public abstract class AbstractLeadWireOpexAspect extends AbstractOperationExecut
 
 
 
-	try {
-		final HttpServletResponse rep = (HttpServletResponse) thisJoinPoint.getArgs()[1];
+	try {	
+		final Object rep = (Object) thisJoinPoint.getArgs()[1];
 		HtmlResponseWrapper capturingResponseWrapper = new HtmlResponseWrapper(
 				(HttpServletResponse) rep);
 		Object[] arg0 = {req,capturingResponseWrapper};
@@ -87,8 +99,11 @@ public abstract class AbstractLeadWireOpexAspect extends AbstractOperationExecut
 		String content = capturingResponseWrapper.getCaptureAsString();
 		StringBuilder _sb = new StringBuilder(content);
 		
-		if (rep.getContentType() != null
-				&& rep.getContentType().contains("text/html")) {			
+		 Method aMethod3 = rep.getClass().getMethod("getContentType");
+		 String aContentType = (String) aMethod3.invoke(rep);
+		 
+		if (aContentType != null
+				&& aContentType.contains("text/html")) {			
 			if (content.contains("boomerang") ) 
 			{
 				isBeaconed="true";
@@ -105,10 +120,22 @@ public abstract class AbstractLeadWireOpexAspect extends AbstractOperationExecut
 						+ " }); "
 						+ "</script>  ";										
 						_sb.insert(0, rum );
-						rep.setContentLength(_sb.toString().length());				
+						
+						Method aMethod4 = rep.getClass().getMethod("setContentLength", int.class);
+						aMethod4.invoke(rep, _sb.toString().length());
+						 
+						 
+					//	rep.setContentLength(_sb.toString().length());				
 					}				
 				}
-				rep.getWriter().write(_sb.toString());		
+		
+		Method aMethod5 = rep.getClass().getMethod("getWriter");
+		Object aWriter = (Object) aMethod5.invoke(rep);
+		
+		Method aMethod6 = aWriter.getClass().getDeclaredMethod("write", String.class);
+		aMethod6.invoke(aWriter, _sb.toString());
+		
+			//	rep.getWriter().write(_sb.toString());		
 		}
 		
 			} finally {
@@ -123,14 +150,14 @@ public abstract class AbstractLeadWireOpexAspect extends AbstractOperationExecut
 	public abstract void monitoredSqlStatement(final org.postgresql.core.CachedQuery queryToExecute,final org.postgresql.core.ParameterList queryParameters, final int flags);
 
 	@Around("monitoredSqlStatement(org.postgresql.core.CachedQuery, org.postgresql.core.ParameterList, int) && notWithinKieker() ")
-public Object statement(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)		
+public Object statement(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)	
+	
 if (!CTRLINST.isMonitoringEnabled()) {
 	return thisJoinPoint.proceed();
 }
 if (!CTRLINST.isProbeActivated(this.signatureToLongString(thisJoinPoint.getSignature()))) {
 	return thisJoinPoint.proceed();
 }
-
 
 // collect data
 final boolean entrypoint;
@@ -159,8 +186,13 @@ if (traceId == -1) {
 final long tin = TIME.getTime();
 
 	Object retVal;
-	final org.postgresql.core.CachedQuery query = (org.postgresql.core.CachedQuery) thisJoinPoint.getArgs()[0];
-	final String sqlStatement = query.toString().replaceAll("\\r\\n|\\r|\\n", " ");
+	final Object query = (Object) thisJoinPoint.getArgs()[0];
+	
+	
+	Method aMethod1 = query.getClass().getMethod("toString");
+	String sqlStatement = ((String)aMethod1.invoke(query)).replaceAll("\\r\\n|\\r|\\n", " ");
+	
+	//final String sqlStatement = query.toString().replaceAll("\\r\\n|\\r|\\n", " ");
 	
 	
 	try {	

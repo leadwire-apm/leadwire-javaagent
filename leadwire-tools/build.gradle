@@ -1,0 +1,47 @@
+apply plugin: 'eclipse'
+
+configurations {
+	resultJar	// all dependencies in this config are included into all jars. This is necessary for the scripts in bin/ to work, e.g., convertLoggingTimestamp.
+}
+
+dependencies {
+	resultJar 'commons-cli:commons-cli:1.4'
+	resultJar 'com.beust:jcommander:1.27'
+
+	compile project(':leadwire-common')
+	compile project(':leadwire-monitoring')	
+
+	compile 'org.apache.commons:commons-math3:3.6.1'	// used by OPAD
+	compile 'org.apache.commons:commons-lang3:3.6'		// used by OPAD
+	compile configurations.resultJar
+
+	compile resolveLibrary('jgraphx-*.jar')				// this artifact is not available on our repositories
+	compile resolveLibrary('Rsession-*.jar')
+	compile resolveLibrary('Rserve-*.jar')
+	compile resolveLibrary('REngine-*.jar')
+	compile resolveLibrary('reflections-*.jar')
+	compile resolveLibrary('activemq-core-*.jar')
+	//compile group: 'org.eclipse.jetty',	name: 'jetty-server', version: '8.1.16.v20140903'
+	
+	// Some dependencies for the HTTP connector of the KDB
+	compile fileTree(dir: 'lib/jetty', include: 'jetty-*.jar')
+	
+	// this project depends on the tests of leadwire-common, e.g., it requires the class AbstractKiekerTest
+	testCompile project (path: ':leadwire-common', configuration: 'testArchives')
+	// this project depends on the tests of leadwire-monitoring, e.g., it requires the class NamedListWriter
+	testCompile project (path: ':leadwire-monitoring', configuration: 'testArchives')
+
+	//testRuntime org.apache.derby:derby:10.13.1.1
+	testRuntime resolveLibrary('geronimo-j2ee-management_1.1_spec-*.jar')
+	testRuntime resolveLibrary('kahadb-*.jar')
+}
+
+eclipse {
+	classpath {
+		defaultOutputDir = file('build-eclipse')
+	}
+}
+
+
+
+

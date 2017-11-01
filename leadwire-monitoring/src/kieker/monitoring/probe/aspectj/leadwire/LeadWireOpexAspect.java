@@ -16,8 +16,7 @@
 
 package kieker.monitoring.probe.aspectj.leadwire;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -25,7 +24,7 @@ import org.aspectj.lang.annotation.Pointcut;
 /**
  * @author Wassim DHIB
  * 
- * @since 1.0
+ * @since 1.13
  */
 @Aspect
 public class LeadWireOpexAspect extends AbstractLeadWireOpexAspect {
@@ -40,7 +39,7 @@ public class LeadWireOpexAspect extends AbstractLeadWireOpexAspect {
 
 	@Override
 	@Pointcut("execution(* javax.servlet.http.HttpServlet.service(..)) && args(request,response)")
-	public void monitoredServletservice(final HttpServletRequest request, final HttpServletResponse response) {
+	public void monitoredServletservice(final javax.servlet.http.HttpServletRequest request, final javax.servlet.http.HttpServletResponse response) {
 		// Aspect Declaration (MUST be empty)
 	}
 	
