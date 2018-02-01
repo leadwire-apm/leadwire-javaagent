@@ -685,9 +685,21 @@ task aspectJJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
     from fileTree(dir: 'lib/sigar', include: 'sigar*.jar').collect {
         zipTree(it)
     }
-  // from fileTree(dir: 'lib', include: 'servlet-api*.jar').collect {
-    //    zipTree(it)
-   // }
+    
+    from fileTree(dir: 'lib', include: 'http*.jar').collect {
+        zipTree(it)
+    }
+    
+      from fileTree(dir: 'lib', include: 'commons-logging*.jar').collect {
+        zipTree(it)
+    }
+    
+    
+    
+    
+   from fileTree(dir: 'lib', include: 'servlet-api*.jar').collect {
+        zipTree(it)
+    }
     from file("lib/aspectjweaver-${libAspectjVersion}.LICENSE")
     
     from configurations.resultJar.collect { it.isDirectory() ? it : zipTree(it) }
