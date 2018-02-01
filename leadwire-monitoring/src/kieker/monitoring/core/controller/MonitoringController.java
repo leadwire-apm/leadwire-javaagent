@@ -127,18 +127,19 @@ public static final MonitoringController createInstance(final Configuration conf
 	if (monitoringController.isTerminated()) {
 		return monitoringController;
 	}
+
+	
+	final long samplingOffset = monitoringController.getSamplingOffset();
+	final long samplingPeriod = monitoringController.getSamplingPeriod();
+	 
+	if (monitoringController.isSystemSamplingEnabled()  && samplingPeriod > 0  ) {
 	
 	final ISigarSamplerFactory sigarFactory = SigarSamplerFactory.INSTANCE;
 
-	 final long offset = 5; // start after 5 seconds
-	 final long period = 60; // monitor every 60 seconds
-	 
 	 final CPUsDetailedPercSampler cpuSampler =
 	 sigarFactory.createSensorCPUsDetailedPerc();
 	 final MemSwapUsageSampler memSwapSampler =
 	 sigarFactory.createSensorMemSwapUsage();
-
-
 	 
 	 final NetworkUtilizationSampler netSampler =
 	 sigarFactory.createSensorNetworkUtilization();
@@ -146,30 +147,32 @@ public static final MonitoringController createInstance(final Configuration conf
 	 sigarFactory.createSensorDiskUsage();
 	 
 	 monitoringController.schedulePeriodicSampler(
-	 cpuSampler, offset, period, TimeUnit.SECONDS);
+	 cpuSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
 	 monitoringController.schedulePeriodicSampler(
-	 memSwapSampler, offset, period, TimeUnit.SECONDS);
+	 memSwapSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
 
 
 	 monitoringController.schedulePeriodicSampler(
-			 netSampler, offset, period, TimeUnit.SECONDS);
+			 netSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
 	 monitoringController.schedulePeriodicSampler(
-			 diskSampler, offset, period, TimeUnit.SECONDS);
+			 diskSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
+	 
+	}
 	 
 	 
-	 
-	 
-
-		final MemorySampler memorySampler = new MemorySampler();
-		final ThreadsStatusSampler tsSampler = new ThreadsStatusSampler();
-
-		final long offsetInSeconds = 2;
-		final long periodInSeconds = 60;
-
-		monitoringController.schedulePeriodicSampler(memorySampler, offsetInSeconds, periodInSeconds, TimeUnit.SECONDS);
-		monitoringController.schedulePeriodicSampler(tsSampler, offsetInSeconds, periodInSeconds, TimeUnit.SECONDS);
-
+	
+	if (monitoringController.isJVMSamplingEnabled()  && samplingPeriod > 0 ) {
 		
+	
+	final MemorySampler memorySampler = new MemorySampler();
+	final ThreadsStatusSampler tsSampler = new ThreadsStatusSampler();
+
+
+
+	monitoringController.schedulePeriodicSampler(memorySampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
+	monitoringController.schedulePeriodicSampler(tsSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
+
+	}	
 		
 
 	 
@@ -211,6 +214,9 @@ public static final MonitoringController createInstance(final Configuration conf
 	LOG.info(monitoringController.toString());
 	return monitoringController;
 }
+
+
+
 
 /**
  * Return the version name of this controller instance.
@@ -314,6 +320,23 @@ public final boolean disableMonitoring() {
 @Override
 public final boolean isMonitoringEnabled() {
 	return this.stateController.isMonitoringEnabled();
+}
+
+private boolean isJVMSamplingEnabled() {
+	// TODO Auto-generated method stub
+	return this.stateController.isJVMSamplingEnabled();
+}
+private boolean isSystemSamplingEnabled() {
+	// TODO Auto-generated method stub
+	return this.stateController.isSystemSamplingEnabled();
+}
+
+private long getSamplingPeriod() {
+	return this.stateController.getSamplingPeriod();
+}
+
+private long getSamplingOffset() {
+	return this.stateController.getSamplingOffset();
 }
 
 @Override

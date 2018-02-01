@@ -37,12 +37,18 @@ public final class StateController extends AbstractController implements IStateC
 	private final String hostname;
 	private final AtomicInteger experimentId = new AtomicInteger(0);
 	private final boolean debug;
-	private volatile boolean rumEnable;
+	private boolean rumEnable;
 	private final String rumServer;
-
-
+	private boolean jvmSamplingEnabled;
+	private boolean systemSamplingEnabled;
+	private final long samplingPeriod;
+	private final long samplingOffset;
 
 	private IStateListener stateListener;
+
+
+
+
 
 	/**
 	 * Creates a new instance of this class using the given parameter.
@@ -58,6 +64,11 @@ public final class StateController extends AbstractController implements IStateC
 		this.debug = configuration.getBooleanProperty(ConfigurationFactory.DEBUG);
 		this.rumServer = configuration.getStringProperty(ConfigurationFactory.RUM_SERVER);
 		this.rumEnable = configuration.getBooleanProperty(ConfigurationFactory.RUM_ENABLE);
+		this.jvmSamplingEnabled = configuration.getBooleanProperty(ConfigurationFactory.JVM_SAMPL_ENABLE);
+		this.systemSamplingEnabled = configuration.getBooleanProperty(ConfigurationFactory.SYS_SAMPL_ENABLE);
+		this.samplingPeriod = configuration.getIntProperty(ConfigurationFactory.SAMPL_PERIOD);
+		this.samplingOffset = configuration.getIntProperty(ConfigurationFactory.SAMPL_OFFSET);
+
 		String hostnameTmp = configuration.getStringProperty(ConfigurationFactory.HOST_NAME);
 		if (hostnameTmp.length() == 0) {
 			hostnameTmp = "<UNKNOWN>";
@@ -105,6 +116,19 @@ public final class StateController extends AbstractController implements IStateC
 		sb.append(this.getRumServer());
 		}else {
 		sb.append("'; rum disabled ;'");	
+		}
+		sb.append("'\n");
+		if ( this.isJVMSamplingEnabled()) {
+		sb.append("'; jvm Sampling enabled ;'");
+		}
+		if ( this.isSystemSamplingEnabled())  {
+		sb.append("'; system Sampling enabled ;'");
+		}
+		if ( this.isJVMSamplingEnabled() || this.isSystemSamplingEnabled() ) {
+		sb.append("'; sampling Period: '");
+		sb.append(this.getSamplingPeriod());	
+		sb.append("'; sampling offset: '");
+		sb.append(this.getSamplingOffset());	
 		}
 		sb.append("'\n");
 		return sb.toString();
@@ -217,6 +241,22 @@ public final class StateController extends AbstractController implements IStateC
 		LOG.info("Disabling Rum");
 		this.rumEnable = false;
 		return true;
+	}
+
+	public boolean isJVMSamplingEnabled() {
+		return jvmSamplingEnabled;
+	}
+
+	public boolean isSystemSamplingEnabled() {
+		return systemSamplingEnabled;
+	}
+
+	public long getSamplingPeriod() {
+		return samplingPeriod;
+	}
+
+	public long getSamplingOffset() {
+		return samplingOffset;
 	}
 	
 	
