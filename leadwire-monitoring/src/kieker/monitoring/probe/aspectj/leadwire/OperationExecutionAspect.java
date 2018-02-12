@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2017 Lead Wire (https://leadwire-apm.com)
+ * Copyright 2015 Kieker Project (http://kieker-monitoring.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,46 +14,31 @@
  * limitations under the License.
  ***************************************************************************/
 
-package kieker.monitoring.probe.aspectj.jdbc;
+package kieker.monitoring.probe.aspectj.leadwire;
 
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
+import kieker.monitoring.probe.aspectj.operationExecution.AbstractOperationExecutionAspect;
+
 /**
- * @author Wassim DHIB
+ * @author Jan Waller
  * 
- * @since 1.3	
+ * @since 1.3
  */
 @Aspect
-public class OperationExecutionAspectFullJDBC extends AbstractOperationExecutionAspectJDBC {
+public class OperationExecutionAspect extends AbstractOperationExecutionAspect {
 
 	/**
 	 * Default constructor.
 	 */
-	public OperationExecutionAspectFullJDBC() {
+	public OperationExecutionAspect() {
 		// empty default constructor
 	}
 
-	/*
 	@Override
-	@Pointcut("execution(* org.postgresql.jdbc.PgStatement.execute(..)) && args(p_sql)")
-	public void monitoredStatement1(final String p_sql) {
-		// Aspect Declaration (MUST be empty)
-	}
-*/
-	@Override
-	@Pointcut("execution(* org.postgresql.jdbc.PgStatement.execute(..)) && args(queryToExecute, queryParameters, flags)")
-	public void monitoredStatement2(final org.postgresql.core.CachedQuery queryToExecute,final org.postgresql.core.ParameterList queryParameters, final int flags ) {
-		// Aspect Declaration (MUST be empty)
-	}
-	
-
-	
-	@Override
-	@Pointcut("execution(* org.postgresql.jdbc.PgStatement.execute(..))")
+	@Pointcut("execution(* *(..)) && !within(javax.servlet..*) && notWithinJdbc()")
 	public void monitoredOperation() {
 		// Aspect Declaration (MUST be empty)
 	}
-
 }
-
