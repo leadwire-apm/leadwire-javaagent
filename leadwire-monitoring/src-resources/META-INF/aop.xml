@@ -2,12 +2,25 @@
 <aspectj>
   <weaver options="-Xset:weaveJavaxPackages=true">
     <!-- Example instrumentation for the myBatis JPetStore -->
-    <include within="org.mybatis.jpetstore..*" />    
-    <include within="org.postgresql.jdbc.PgStatement" />
-    <include within="javax.servlet.http.HttpServlet"/>
+    <include within="org.mybatis.jpetstore..*" /> 
+    
+    <!-- Servlet api  --> 
+    <include within="javax.servlet.http.HttpServlet"/>  
+
+    <!-- JDBC Drivers -->
+    <include within="org.h2..*"/>
+    <include within="com.mysql.jdbc..*"/>
+    <include within="org.mariadb.jdbc..*"/>
+    <include within="org.postgresql.jdbc..*"/>
+    <include within="com.microsoft.sqlserver.jdbc..*"/>
+    <include within="oracle.jdbc..*"/>
+	<include within="net.sf.log4jdbc..*"/>
   </weaver>  
   <aspects>
-    <!-- Use the aspect directives to specify the aspect(s) to use (typically only one). -->
-    <aspect name="kieker.monitoring.probe.aspectj.leadwire.LeadWireOpexAspect"/>
+    <!-- Use the aspect directives to specify the aspect(s) to use. -->
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.OperationExecutionAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.ServletAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcAspect"/>
+    
   </aspects>
 </aspectj>

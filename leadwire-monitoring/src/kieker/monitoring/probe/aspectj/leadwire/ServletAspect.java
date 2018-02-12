@@ -27,32 +27,31 @@ import org.aspectj.lang.annotation.Pointcut;
  * @since 1.13
  */
 @Aspect
-public class LeadWireOpexAspect extends AbstractLeadWireOpexAspect {
+public class ServletAspect extends AbstractServletAspect {
 
 	/**
 	 * Default constructor.
 	 */
-	public LeadWireOpexAspect() {
+	public ServletAspect() {
 		// empty default constructor
 	}
 
 
+
+	
+
+	@Override
+	@Pointcut("execution(* javax.servlet.http.HttpServlet.service(..)) && args(request,response) ")
+	public void monitoredOperation() {
+		// Aspect Declaration (MUST be empty)
+	}
+	
 	@Override
 	@Pointcut("execution(* javax.servlet.http.HttpServlet.service(..)) && args(request,response)")
 	public void monitoredServletservice(final javax.servlet.http.HttpServletRequest request, final javax.servlet.http.HttpServletResponse response) {
 		// Aspect Declaration (MUST be empty)
 	}
 	
-	@Override
-	@Pointcut("execution(* org.postgresql.jdbc.PgStatement.execute(..)) && args(queryToExecute, queryParameters, flags)")
-	public void monitoredSqlStatement(final org.postgresql.core.CachedQuery queryToExecute,final org.postgresql.core.ParameterList queryParameters, final int flags ) {
-		// Aspect Declaration (MUST be empty)
-	}
-
-	@Override
-	@Pointcut("execution(* *(..)) || execution(* org.postgresql.jdbc.PgStatement.execute(..)) || execution(* javax.servlet.http.HttpServlet.service(..)) ")
-	public void monitoredOperation() {
-		// Aspect Declaration (MUST be empty)
-	}
+	
 
 }

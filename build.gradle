@@ -693,8 +693,7 @@ task aspectJJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
       from fileTree(dir: 'lib', include: 'commons-logging*.jar').collect {
         zipTree(it)
     }
-    
-    
+  
     
     
    from fileTree(dir: 'lib', include: 'servlet-api*.jar').collect {

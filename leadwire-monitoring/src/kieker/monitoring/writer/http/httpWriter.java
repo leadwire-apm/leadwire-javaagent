@@ -13,8 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
-package kieker.monitoring.writer.elasticapm;
+package kieker.monitoring.writer.http;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.CharBuffer;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -24,33 +29,47 @@ import org.apache.http.impl.client.HttpClientBuilder;
 
 import kieker.common.configuration.Configuration;
 import kieker.common.record.IMonitoringRecord;
+import kieker.common.record.io.TextValueSerializer;
 import kieker.monitoring.core.controller.ReceiveUnfilteredConfiguration;
 import kieker.monitoring.registry.IRegistryListener;
+import kieker.monitoring.registry.IWriterRegistry;
+import kieker.monitoring.registry.WriterRegistry;
 import kieker.monitoring.writer.AbstractMonitoringWriter;
 
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 
 
 /**
- * http/json data writer which sends monitoring records to a Elastic Apm Server.
+ * http writer
  *
  * @author Wassim DHIB
  *
- * @since 1.13
+ * @since 1.14
  */
 
 
 @ReceiveUnfilteredConfiguration // required for using class KiekerLogFolder
-public class javaBeatWriter extends AbstractMonitoringWriter implements IRegistryListener<String> {
+public class httpWriter extends AbstractMonitoringWriter implements IRegistryListener<String> {
 
-	public static final String PREFIX = javaBeatWriter.class.getName() + ".";
+	public static final String PREFIX = httpWriter.class.getName() + ".";
+	
+	private final IWriterRegistry<String> writerRegistry;
+	private final TextValueSerializer serializer;
+	private final CharBuffer buffer = CharBuffer.allocate(65535);
+
+	private String httpServer;
+
 
 	/** The name of the configuration determining whether to flush upon each incoming registry entry. */
-	public static final String CONFIG_FLUSH_MAPFILE = PREFIX + "flushMapfile";
+	public static final String HTTP_SERVER = PREFIX + "httpServer";
 
-	public javaBeatWriter(final Configuration configuration) {
+	
+	public httpWriter(final Configuration configuration) {
 		super(configuration);
+		
+		httpServer = configuration.getStringProperty(HTTP_SERVER, "UTF-8");
+
+		this.serializer = TextValueSerializer.create(this.buffer);
+		this.writerRegistry = new WriterRegistry(this);
 	}
 
 	@Override
@@ -59,19 +78,34 @@ public class javaBeatWriter extends AbstractMonitoringWriter implements IRegistr
 	}
 
 	@Override
-	public void writeMonitoringRecord(final IMonitoringRecord record) {
+	public void writeMonitoringRecord(final IMonitoringRecord record)  {
 
-		  String payload = "data={" +
-	                "\"username\": \"admin\", " +
-	                "\"first_name\": \"System\", " +
-	                "\"last_name\": \"Administrator\"" +
-	                "}";
-	        StringEntity entity = new StringEntity(payload,
-	                ContentType.APPLICATION_FORM_URLENCODED);
+		final String recordClassName = record.getClass().getName();
+		this.writerRegistry.register(recordClassName);
 
-	        HttpClient httpClient = HttpClientBuilder.create().build();
-	        HttpPost request = new HttpPost("http://145.239.158.168/rum");
-	        request.setEntity(entity);
+		StringBuilder _sb = new StringBuilder('$');
+
+		
+		this.buffer.clear();
+		
+		_sb.append(this.writerRegistry.getId(recordClassName));
+		_sb.append(';');
+		_sb.append(record.getLoggingTimestamp());
+
+		record.serialize(this.serializer);
+
+		this.buffer.flip();
+		_sb.append(this.buffer.toString());
+		
+			
+		    HttpClient httpClient = HttpClientBuilder.create().build();
+		    
+		   
+		    
+	        HttpPost request;
+			try {
+				request = new HttpPost("http://"+this.httpServer+"/?"+ URLEncoder.encode(_sb.toString(), "UTF-8"));
+		
 
 	        HttpResponse response = null;
 			try {
@@ -83,8 +117,15 @@ public class javaBeatWriter extends AbstractMonitoringWriter implements IRegistr
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	        System.out.println(response.getStatusLine().getStatusCode());
-	        
+			
+		    // System.out.println(_sb.toString());
+		        
+			} catch (UnsupportedEncodingException e1) {
+				e1.printStackTrace();
+			}
+			
+	       
+
 	
 	}
 

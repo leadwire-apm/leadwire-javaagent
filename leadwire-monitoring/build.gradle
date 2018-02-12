@@ -4,7 +4,6 @@ apply plugin: "com.github.hauner.jarTest"
 dependencies {
 	compile project(':leadwire-common')
 	
-	compile resolveLibrary('postgresql*.jar')
 	compile resolveLibrary('http*.jar')
 	
 	compile 'com.rabbitmq:amqp-client:4.2.1'
@@ -59,7 +58,6 @@ task iajc(dependsOn: classes) {
            
             classpath {
             	fileset(dir: '../lib', includes: "http*.jar")
-            	fileset(dir: '../lib', includes: "postgresql*.jar")
                 fileset(dir: '../lib', includes: "aspectjweaver-*.jar")
                 fileset(dir: '../lib', includes: "aspectjrt-*.jar")
 				fileset(dir: '../lib/framework-libs', includes: "javax.servlet-*.jar")

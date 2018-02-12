@@ -45,7 +45,12 @@ public abstract class AbstractAspectJProbe implements IMonitoringProbe {
 	 */
 	@Pointcut("!within(kieker.common..*) && !within(kieker.monitoring..*) && !within(kieker.analysis..*) && !within(kieker.tools..*)")
 	public void notWithinKieker() {} // NOPMD (Aspect)
-
+	
+	/**
+	 * This is a pointcut accepting everything that is not within kieker.common, kieker.monitoring, kieker.analysis and kieker.tools.
+	 */
+	@Pointcut("!within(org.h2..*) && !within(com.mysql.jdbc..*) && !within(org.mariadb.jdbc..*) && !within(org.postgresql.jdbc..**) && !within(com.microsoft.sqlserver.jdbc..*) && !within(oracle.jdbc..*) && !within(net.sf.log4jdbc..*)")
+	public void notWithinJdbc() {} // NOPMD (Aspect)
 	/**
 	 * This is a pointcut accepting all calls and executions of setter methods (methods which return void and start with {@code set}).
 	 */
