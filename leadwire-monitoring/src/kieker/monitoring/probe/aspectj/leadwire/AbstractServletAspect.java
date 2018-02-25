@@ -146,6 +146,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 
 			if ( isBeaconed == null ) {								
 				String rum= "<script src=\"http://"+rumServer+"/boomerang-master/boomerang.js\"></script> "
+						+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/navtiming.js\"></script> "
 						+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/rt.js\"></script> "
 						+ "<script type=\"text/javascript\" > "
 						+ "  BOOMR.init({ "
@@ -168,6 +169,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 		Object aWriter = (Object) aMethod5.invoke(rep);
 		
 		Method aMethod6 = aWriter.getClass().getDeclaredMethod("write", String.class);
+		aMethod6.setAccessible(Boolean.TRUE); // here
 		aMethod6.invoke(aWriter, _sb.toString());
 		
 			//	rep.getWriter().write(_sb.toString());		

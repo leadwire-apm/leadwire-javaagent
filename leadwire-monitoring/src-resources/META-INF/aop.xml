@@ -2,8 +2,9 @@
 <aspectj>
   <weaver options="-Xset:weaveJavaxPackages=true">
     <!-- Example instrumentation for the myBatis JPetStore -->
-    <include within="org.mybatis.jpetstore..*" /> 
     
+    <include within="org.squashtest.csp.core.bugtracker.service.BugTrackersServiceImpl" /> 
+        
     <!-- Servlet api  --> 
     <include within="javax.servlet.http.HttpServlet"/>  
 
@@ -15,6 +16,7 @@
     <include within="com.microsoft.sqlserver.jdbc..*"/>
     <include within="oracle.jdbc..*"/>
 	<include within="net.sf.log4jdbc..*"/>
+
   </weaver>  
   <aspects>
     <!-- Use the aspect directives to specify the aspect(s) to use. -->

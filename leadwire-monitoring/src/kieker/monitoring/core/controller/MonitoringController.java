@@ -16,6 +16,7 @@
 
 package kieker.monitoring.core.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -27,10 +28,17 @@ import kieker.common.logging.LogFactory;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.misc.KiekerMetadataRecord;
 import kieker.common.util.Version;
+import kieker.monitoring.bootstrap.config.DefaultProfilerConfig;
+import kieker.monitoring.bootstrap.resolver.ApplicationServerTypePluginResolver;
+import kieker.monitoring.bootstrap.resolver.ConditionProvider;
+import kieker.monitoring.common.trace.ServiceType;
 import kieker.monitoring.core.configuration.ConfigurationFactory;
 import kieker.monitoring.core.sampler.ISampler;
 import kieker.monitoring.core.sampler.ScheduledSamplerJob;
 import kieker.monitoring.core.signaturePattern.SignatureFactory;
+import kieker.monitoring.plugins.tomcat.TomcatConfig;
+import kieker.monitoring.plugins.tomcat.TomcatDetector;
+import kieker.monitoring.profiler.plugin.DefaultProfilerPluginSetupContext;
 import kieker.monitoring.sampler.mxbean.MemorySampler;
 import kieker.monitoring.sampler.mxbean.ThreadsStatusSampler;
 import kieker.monitoring.sampler.sigar.ISigarSamplerFactory;
@@ -87,6 +95,12 @@ private MonitoringController(final Configuration configuration) {
  *            The configuration for the new controller.
  *
  * @return A new controller.
+ * @throws InvocationTargetException 
+ * @throws IllegalArgumentException 
+ * @throws IllegalAccessException 
+ * @throws SecurityException 
+ * @throws NoSuchMethodException 
+ * @throws ClassNotFoundException 
  */
 public static final MonitoringController createInstance(final Configuration configuration) {
 	final MonitoringController monitoringController;
@@ -128,6 +142,17 @@ public static final MonitoringController createInstance(final Configuration conf
 		return monitoringController;
 	}
 
+	
+	
+	/*
+	DefaultProfilerPluginSetupContext aContext = new DefaultProfilerPluginSetupContext(new DefaultProfilerConfig());
+	final TomcatConfig aConfig = new TomcatConfig(aContext.getConfig());
+    TomcatDetector tomcatDetector = new TomcatDetector(aConfig.getTomcatBootstrapMains());
+    aContext.addApplicationTypeDetector(tomcatDetector);
+     
+    ApplicationServerTypePluginResolver aResolver = new ApplicationServerTypePluginResolver(aContext.getApplicationTypeDetectors(), ConditionProvider.DEFAULT_CONDITION_PROVIDER);
+    aResolver.resolve();
+	*/
 	
 	final long samplingOffset = monitoringController.getSamplingOffset();
 	final long samplingPeriod = monitoringController.getSamplingPeriod();
