@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2017 Lead Wire (http://leadwire-apm.com)
+ * Copyright 2018 Lead Wire (https://leadwire.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,13 +61,13 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 
 	@Around("monitoredServletservice(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) && notWithinKieker()")
 	public Object servletservice(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
-	if (!CTRLINST.isMonitoringEnabled()) {
-		return thisJoinPoint.proceed();
-	}
-	if (!CTRLINST.isProbeActivated(this.signatureToLongString(thisJoinPoint.getSignature()))) {
-		return thisJoinPoint.proceed();
-	}
-	
+		if (!CTRLINST.isMonitoringEnabled()) {
+			return thisJoinPoint.proceed();
+		}
+		if (!CTRLINST.isProbeActivated(this.signatureToLongString(thisJoinPoint.getSignature()))) {
+			return thisJoinPoint.proceed();
+		}
+
 		// collect data
 		final boolean entrypoint;
 		final String signature = this.signatureToLongString(thisJoinPoint.getSignature());
@@ -84,119 +84,132 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 			eoi = 0;
 			ess = 0;
 		} else {
-			entrypoint = false;
-			eoi = CFREGISTRY.incrementAndRecallThreadLocalEOI(); // ess > 1
-			ess = CFREGISTRY.recallAndIncrementThreadLocalESS(); // ess >= 0
-			if ((eoi == -1) || (ess == -1)) {
-				LOG.error("eoi and/or ess have invalid values:" + " eoi == " + eoi + " ess == " + ess);
-				CTRLINST.terminateMonitoring();
-			}
+		
+			return thisJoinPoint.proceed();
+			
 		}
 		// measure before
 		final long tin = TIME.getTime();
-		
-	final Object req = (Object) thisJoinPoint.getArgs()[0];
-	
-	
-	
-	if (sessionId==null) {
-    
-	 Method aMethod = req.getClass().getMethod("getSession", boolean.class);
-	 Object aSession = (Object) aMethod.invoke(req, true);
-		 
-	 Method aMethod2 = aSession.getClass().getMethod("getId");
-	 String aId = (String) aMethod2.invoke(aSession);	 
 
-	sessionId = (req != null) ? aId : null; 
-	SESSIONREGISTRY.storeThreadLocalSessionId(sessionId);
+		final Object req = (Object) thisJoinPoint.getArgs()[0];
 
+
+
+		if (sessionId==null) {
+
+			Method aMethod = req.getClass().getMethod("getSession", boolean.class);
+			Object aSession = (Object) aMethod.invoke(req, true);
+
+			Method aMethod2 = aSession.getClass().getMethod("getId");
+			String aId = (String) aMethod2.invoke(aSession);	 
+
+			sessionId = (req != null) ? aId : null; 
+			SESSIONREGISTRY.storeThreadLocalSessionId(sessionId);
+
+		}
+
+
+		Object retVal;
+		String completeURL = null;
+		try {
+			// check getRequestURL for  js/css/png/gif
+			Method aMethodrU = req.getClass().getMethod("getRequestURL");
+			aMethodrU.setAccessible(Boolean.TRUE); // here
+			StringBuffer requestURL =  (StringBuffer) aMethodrU.invoke(req);
+			completeURL = requestURL.toString();
+
+			if (completeURL.endsWith(".jsp") || completeURL.endsWith(".css") || completeURL.endsWith(".js") || completeURL.endsWith(".gif") || completeURL.endsWith(".png")) {
+				retVal = thisJoinPoint.proceed();
+			} 
+			else {
+				final Object rep = (Object) thisJoinPoint.getArgs()[1];
+				HtmlResponseWrapper capturingResponseWrapper = new HtmlResponseWrapper(
+						(HttpServletResponse) rep);
+				Object[] arg0 = {req,capturingResponseWrapper};
+				retVal = thisJoinPoint.proceed(arg0);
+
+				if (CTRLINST.isRumEnable()){
+					final String rumServer = CTRLINST.getRumServer();
+
+					String isBeaconed = null;
+					String content = capturingResponseWrapper.getCaptureAsString();
+					StringBuilder _sb = new StringBuilder(content);
+
+					Method aMethod3 = rep.getClass().getMethod("getContentType");
+					String aContentType = (String) aMethod3.invoke(rep);
+
+					if (aContentType != null
+							&& aContentType.contains("text/html")) {			
+						if (content.contains("boomerang") ) 
+						{
+							isBeaconed="true";
+						}
+
+						if ( isBeaconed == null ) {		
+
+							String rum= "\n"
+									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/boomerang.js\"></script> "
+									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/plugins/navtiming.js\"></script> "
+									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/plugins/rt.js\"></script> "
+									+ "<script type=\"text/javascript\" > "
+									+ "  BOOMR.init({ "
+									+ "	traceid: \""+traceId+"\","
+									+ "	sessionid: \""+sessionId+"\","
+									+ "      beacon_url: \"https://"+rumServer+"/rum/\" "
+									+ " }); "
+									+ "</script> "
+									+ "\n";
+
+							int indexOfHead = _sb.indexOf("</head>");
+
+							if (indexOfHead>=0) {
+
+								_sb.insert(indexOfHead, rum );
+
+
+								//Method aMethod4 = rep.getClass().getMethod("setContentLength", int.class);
+								//aMethod4.setAccessible(Boolean.TRUE); // here
+								//aMethod4.invoke(rep, _sb.toString().length());
+							}
+						}				
+					}
+
+					Method aMethod5 = rep.getClass().getMethod("getWriter");
+					Object aWriter = (Object) aMethod5.invoke(rep);
+
+					Method aMethod6 = aWriter.getClass().getDeclaredMethod("write", String.class);
+					aMethod6.setAccessible(Boolean.TRUE); // here
+					aMethod6.invoke(aWriter, _sb.toString());
+
+				}
+
+			} 
+
+		}
+		finally	{
+
+			final long tout = TIME.getTime();
+			CTRLINST.newMonitoringRecord(new OperationExecutionRecord(completeURL, sessionId, traceId, tin, tout, hostname, eoi, ess));
+			SESSIONREGISTRY.unsetThreadLocalSessionId();
+
+			// cleanup
+			if (entrypoint) {
+				CFREGISTRY.unsetThreadLocalTraceId();
+				CFREGISTRY.unsetThreadLocalEOI();
+				CFREGISTRY.unsetThreadLocalESS();
+			} else {
+				CFREGISTRY.storeThreadLocalESS(ess); // next operation is ess
+			}
+
+		}
+
+
+		return retVal;
 	}
-	
-		
-	
-	Object retVal;
-
-//	long traceId = CFREGISTRY.recallThreadLocalTraceId(); // traceId, -1 if entry point
 
 
 
-	try {	
-		final Object rep = (Object) thisJoinPoint.getArgs()[1];
-		HtmlResponseWrapper capturingResponseWrapper = new HtmlResponseWrapper(
-				(HttpServletResponse) rep);
-		Object[] arg0 = {req,capturingResponseWrapper};
-		retVal = thisJoinPoint.proceed(arg0);
-		
-		if (CTRLINST.isRumEnable()){
-			final String rumServer = CTRLINST.getRumServer();
-
-		String isBeaconed = null;
-		String content = capturingResponseWrapper.getCaptureAsString();
-		StringBuilder _sb = new StringBuilder(content);
-		
-		 Method aMethod3 = rep.getClass().getMethod("getContentType");
-		 String aContentType = (String) aMethod3.invoke(rep);
-		 
-		if (aContentType != null
-				&& aContentType.contains("text/html")) {			
-			if (content.contains("boomerang") ) 
-			{
-				isBeaconed="true";
-			}
-
-			if ( isBeaconed == null ) {								
-				String rum= "<script src=\"http://"+rumServer+"/boomerang-master/boomerang.js\"></script> "
-						+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/navtiming.js\"></script> "
-						+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/rt.js\"></script> "
-						+ "<script type=\"text/javascript\" > "
-						+ "  BOOMR.init({ "
-						+ "	traceid: \""+traceId+"\","
-						+ "	sessionid: \""+sessionId+"\","
-						+ "      beacon_url: \"http://"+rumServer+"/\" "
-						+ " }); "
-						+ "</script>  ";										
-						_sb.insert(0, rum );
-						
-						Method aMethod4 = rep.getClass().getMethod("setContentLength", int.class);
-						aMethod4.invoke(rep, _sb.toString().length());
-						 
-						 
-					//	rep.setContentLength(_sb.toString().length());				
-					}				
-				}
-		
-		Method aMethod5 = rep.getClass().getMethod("getWriter");
-		Object aWriter = (Object) aMethod5.invoke(rep);
-		
-		Method aMethod6 = aWriter.getClass().getDeclaredMethod("write", String.class);
-		aMethod6.setAccessible(Boolean.TRUE); // here
-		aMethod6.invoke(aWriter, _sb.toString());
-		
-			//	rep.getWriter().write(_sb.toString());		
-		}
-		
-			} finally {
-				
-				final long tout = TIME.getTime();
-				CTRLINST.newMonitoringRecord(new OperationExecutionRecord(signature, sessionId, traceId, tin, tout, hostname, eoi, ess));
-				SESSIONREGISTRY.unsetThreadLocalSessionId();
-				
-				// cleanup
-				if (entrypoint) {
-					CFREGISTRY.unsetThreadLocalTraceId();
-					CFREGISTRY.unsetThreadLocalEOI();
-					CFREGISTRY.unsetThreadLocalESS();
-				} else {
-					CFREGISTRY.storeThreadLocalESS(ess); // next operation is ess
-				}
-				
-			}
-			return retVal;
-		}
-	
-	
 
 
-	
 
 }

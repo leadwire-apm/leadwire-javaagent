@@ -27,7 +27,7 @@ import org.aspectj.lang.annotation.Pointcut;
  * @since 1.13
  */
 @Aspect
-public class ServletAspect extends AbstractServletAspect2 {
+public class ServletAspect extends AbstractServletAspect {
 
 	/**
 	 * Default constructor.

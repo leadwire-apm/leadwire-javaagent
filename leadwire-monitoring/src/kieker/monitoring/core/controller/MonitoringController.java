@@ -41,6 +41,7 @@ import kieker.monitoring.plugins.tomcat.TomcatDetector;
 import kieker.monitoring.profiler.plugin.DefaultProfilerPluginSetupContext;
 import kieker.monitoring.sampler.mxbean.MemorySampler;
 import kieker.monitoring.sampler.mxbean.ThreadsStatusSampler;
+import kieker.monitoring.sampler.mxbean.TomcatJdbcConnectionPoolSampler;
 import kieker.monitoring.sampler.sigar.ISigarSamplerFactory;
 import kieker.monitoring.sampler.sigar.SigarSamplerFactory;
 import kieker.monitoring.sampler.sigar.samplers.CPUsDetailedPercSampler;
@@ -191,11 +192,14 @@ public static final MonitoringController createInstance(final Configuration conf
 	
 	final MemorySampler memorySampler = new MemorySampler();
 	final ThreadsStatusSampler tsSampler = new ThreadsStatusSampler();
+	final TomcatJdbcConnectionPoolSampler jdbcSampler = new TomcatJdbcConnectionPoolSampler();
+
 
 
 
 	monitoringController.schedulePeriodicSampler(memorySampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
 	monitoringController.schedulePeriodicSampler(tsSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
+	monitoringController.schedulePeriodicSampler(jdbcSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
 
 	}	
 		
@@ -482,5 +486,11 @@ private static final class LazyHolder { // NOCS
 	public String getRumServer() {
 		return this.stateController.getRumServer();
 	}
+	
+	@Override
+	public long getSqlThreshold() {
+		return this.stateController.getSqlThreshold();
+	}
+	
 
 }

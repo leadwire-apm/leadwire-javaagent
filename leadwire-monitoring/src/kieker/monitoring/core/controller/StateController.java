@@ -39,10 +39,12 @@ public final class StateController extends AbstractController implements IStateC
 	private final boolean debug;
 	private boolean rumEnable;
 	private final String rumServer;
+	private final long sqlThreshold;
 	private boolean jvmSamplingEnabled;
 	private boolean systemSamplingEnabled;
 	private final long samplingPeriod;
 	private final long samplingOffset;
+
 
 	private IStateListener stateListener;
 
@@ -64,6 +66,7 @@ public final class StateController extends AbstractController implements IStateC
 		this.debug = configuration.getBooleanProperty(ConfigurationFactory.DEBUG);
 		this.rumServer = configuration.getStringProperty(ConfigurationFactory.RUM_SERVER);
 		this.rumEnable = configuration.getBooleanProperty(ConfigurationFactory.RUM_ENABLE);
+		this.sqlThreshold= configuration.getIntProperty(ConfigurationFactory.SQL_THRESHOLD);
 		this.jvmSamplingEnabled = configuration.getBooleanProperty(ConfigurationFactory.JVM_SAMPL_ENABLE);
 		this.systemSamplingEnabled = configuration.getBooleanProperty(ConfigurationFactory.SYS_SAMPL_ENABLE);
 		this.samplingPeriod = configuration.getIntProperty(ConfigurationFactory.SAMPL_PERIOD);
@@ -117,6 +120,8 @@ public final class StateController extends AbstractController implements IStateC
 		}else {
 		sb.append("'; rum disabled ;'");	
 		}
+		sb.append("'; sql Threshold: '");
+		sb.append(this.sqlThreshold);
 		sb.append("'\n");
 		if ( this.isJVMSamplingEnabled()) {
 		sb.append("'; jvm Sampling enabled ;'");
@@ -241,6 +246,10 @@ public final class StateController extends AbstractController implements IStateC
 		LOG.info("Disabling Rum");
 		this.rumEnable = false;
 		return true;
+	}
+
+	public long getSqlThreshold() {
+		return sqlThreshold;
 	}
 
 	public boolean isJVMSamplingEnabled() {

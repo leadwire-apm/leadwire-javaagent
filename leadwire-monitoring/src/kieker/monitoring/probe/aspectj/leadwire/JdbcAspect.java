@@ -51,6 +51,8 @@ public class JdbcAspect extends AbstractAspectJProbe {
 	private static final IMonitoringController CTRLINST = MonitoringController.getInstance();
 	private static final ITimeSource TIME = CTRLINST.getTimeSource();
 	private static final String VMNAME = CTRLINST.getHostname();
+	private static final long SQL_THRESHOLD = CTRLINST.getSqlThreshold();
+
 	
 	
 	/* Configuration */
@@ -134,7 +136,9 @@ final long tin = TIME.getTime();
 			} finally {
 				
 				final long tout = TIME.getTime();
+				if (tout-tin > SQL_THRESHOLD) {
 				CTRLINST.newMonitoringRecord(new JDBCOperationExecutionRecord(sqlStatement, sessionId, traceId, tin, tout, hostname, eoi, ess));
+				}
 				SESSIONREGISTRY.unsetThreadLocalSessionId();
 				
 				// cleanup

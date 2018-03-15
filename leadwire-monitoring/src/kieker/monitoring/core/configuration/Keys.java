@@ -76,6 +76,7 @@ interface Keys { // NOPMD NOCS (static list)
 	public static final String ADAPTIVE_MONITORING_BOUNDED_CACHE_BEHAVIOUR = PREFIX + "adaptiveMonitoring.boundedCacheBehaviour";
 	public static final String RUM_SERVER = PREFIX + "rumServer";
 	public static final String RUM_ENABLE = PREFIX + "rumEnable";
+	public static final String SQL_THRESHOLD = PREFIX + "sqlThreshold";
 	public static final String JVM_SAMPL_ENABLE = PREFIX + "jvmSamplingEnable";
 	public static final String SYS_SAMPL_ENABLE = PREFIX + "sysSamplingEnable";
 	public static final String SAMPL_PERIOD = PREFIX + "samplingPeriod";

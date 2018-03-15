@@ -166,4 +166,13 @@ public interface IStateController {
 	 * @since 1.13
 	 */
 	String getRumServer();
+
+	
+	/**
+	 * returns the minimum threshold for sql traces
+	 *  
+	 * @since 1.13
+	 */
+	
+	long getSqlThreshold();
 }
