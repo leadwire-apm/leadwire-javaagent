@@ -28,15 +28,15 @@
     FreeBSD | x86 |(4.x, 5.x, 6.x)
     Mac OS X | PowerPC | (10.4)
     
-- Jvm Monitoring (JMX)
-- Deep Dive into application source code
-- JDBC monitoring for main commercial and open-source data bases 
-    H2
-    Mysql
-    Mariadb
-    Postgresql
-    Microsoft sqlserver
-    Oracle
+* **Jvm Monitoring (JMX)**
+* **Deep Dive into application source code**
+* **SQL monitoring for commercial and free databases which have endorsed the JDBC TM database access API and have built or are building JDBC-based products: **
+   * H2
+   * Mysql
+   * Mariadb
+   * Postgresql
+   * Microsoft sqlserver
+   * Oracle
 
 
 ## Integration
