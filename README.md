@@ -37,7 +37,8 @@
    * Compilation
    * Uptime
 * **Deep Dive into application source code**
-Enable code package, class and method level throught aspectj library
+
+Enable package, class and method level traces throught aspectj library
 ```
 <aspectj>
   <weaver>
