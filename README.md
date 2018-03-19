@@ -14,6 +14,7 @@
    * File system detection and metrics
    * Network interface configuration info and metrics 
    *The following platforms are currently supported:
+   
    os | arch | version
    ----- | ---- | ---------------------
     Linux | x86 | (2.2, 2.4, 2.6 kernels)
@@ -25,6 +26,7 @@
     AIX | PowerPC | (4.3, 5.1, 5.2, 5.3)
     FreeBSD | x86 |(4.x, 5.x, 6.x)
     Mac OS X | PowerPC | (10.4)
+    
 - Jvm Monitoring (JMX)
 - Deep Dive into application source code
 - JDBC monitoring for main commercial and open-source data bases 
