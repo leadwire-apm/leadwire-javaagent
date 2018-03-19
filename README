@@ -1,4 +1,4 @@
-#Features
+## Features
 - Real User Monitroing : The java agent injects a JavaScript plugin in html pages which measures the performance characteristicsof real-world page loads and interactions :
   Measure a page’s perceived performance
   Collect browser WebTiming information
@@ -24,9 +24,14 @@
     FreeBSD x86 (4.x, 5.x, 6.x)
      Mac OS X PowerPC (10.4)
 - Jvm Monitoring (JMX)
-- Deep Dive in application code
-- JDBC monitoring for main commercial and open-source data bases Oracle, Postgres, MySQL
-
+- Deep Dive into application source code
+- JDBC monitoring for main commercial and open-source data bases 
+    H2
+    Mysql
+    Mariadb
+    Postgresql
+    Microsoft sqlserver
+    Oracle
 
 
 # Integration
