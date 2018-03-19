@@ -13,7 +13,8 @@
    * Per-process memory, cpu, credential info, state, arguments, environment, open files
    * File system detection and metrics
    * Network interface configuration info and metrics 
-   *The following platforms are currently supported:
+   
+   **The following platforms are currently supported:**
    
    os | arch | version
    ----- | ---- | ---------------------
