@@ -30,7 +30,7 @@
     
 * **Jvm Monitoring (JMX)**
 * **Deep Dive into application source code**
-* **SQL monitoring for commercial and free databases which have endorsed the JDBC TM database access API and have built or are building JDBC-based products: **
+* **SQL monitoring for commercial and free databases which have endorsed the JDBC TM database access API and have built or are building JDBC-based products:**
    * H2
    * Mysql
    * Mariadb
