@@ -41,7 +41,7 @@ The only thing you have to do is to place the agent with your application and in
 
 The integration is as simple as adding the following to the startup of your application.
 
-# -javaagent:[LEADWIRE_HOME]/leadwire-agent.jar -Dleadwire.agent.name=[AGENT_NAME]
+` -javaagent:[LEADWIRE_HOME]/leadwire-agent.jar -Dleadwire.agent.name=[AGENT_NAME] `
 
 ## Eclipse Setup for Developers
 * Get Gradle support by installing the Eclipse plugin "Buildship: ..." in version 2 or above.
