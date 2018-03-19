@@ -48,7 +48,7 @@ Enable package, class and method level traces throught aspectj library
    * Compilation
    * Uptime
 
-* **SQL monitoring for commercial and free databases which have endorsed the JDBC TM database access API and have built or are building JDBC-based products:**
+* **SQL monitoring for commercial and free database drivers which have endorsed the JDBC TM database access API and are JDBC4 compliant :**
    * Oracle
    * Postgresql
    * Mysql
