@@ -8,6 +8,17 @@
     * Request/page tagging
     * Measure DNS latency
     * Measure a random sample of users instead of all users
+   
+* **Deep Dive into your application source code**
+
+Enable package, class and method level traces throught aspectj library
+```
+<aspectj>
+  <weaver>
+    <include within="org.squashtest.csp.core.bugtracker.service.BugTrackersServiceImpl" /> 
+    ...
+```    
+
 * **System resources monitoring** throught the Sigar API which provides a portable interface for gathering system information such as :
    * System memory, swap, cpu, load average, uptime
    * Per-process memory, cpu, credential info, state, arguments, environment, open files
@@ -36,22 +47,16 @@
    * Class Loading
    * Compilation
    * Uptime
-* **Deep Dive into application source code**
 
-Enable package, class and method level traces throught aspectj library
-```
-<aspectj>
-  <weaver>
-    <include within="org.squashtest.csp.core.bugtracker.service.BugTrackersServiceImpl" /> 
-    ...
-```    
 * **SQL monitoring for commercial and free databases which have endorsed the JDBC TM database access API and have built or are building JDBC-based products:**
-   * H2
-   * Mysql
-   * Mariadb
-   * Postgresql
-   * Microsoft sqlserver
    * Oracle
+   * Postgresql
+   * Mysql
+   * Microsoft sqlserver
+   * H2
+   * Mariadb
+   
+   
 
 see full list http://www.oracle.com/technetwork/java/index-136695.html
 ## Integration
