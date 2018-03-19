@@ -41,7 +41,8 @@ Enable code package, class and method level throught aspectj library
 ```<aspectj>
   <weaver options="-Xset:weaveJavaxPackages=true">
     <!-- Sample instrumentation for Squash-TM -->
-    <include within="org.squashtest.csp.core.bugtracker.service.BugTrackersServiceImpl" /> ```
+    <include within="org.squashtest.csp.core.bugtracker.service.BugTrackersServiceImpl" /> 
+```    
 * **SQL monitoring for commercial and free databases which have endorsed the JDBC TM database access API and have built or are building JDBC-based products:**
    * H2
    * Mysql
