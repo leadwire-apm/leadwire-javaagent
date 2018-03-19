@@ -53,7 +53,7 @@ Enable package, class and method level traces throught aspectj library
    * Microsoft sqlserver
    * Oracle
 
-
+see full list http://www.oracle.com/technetwork/java/index-136695.html
 ## Integration
 
 The integration of Lead Wire in your application is completely transparent, you do not have to change a single line of code. 
