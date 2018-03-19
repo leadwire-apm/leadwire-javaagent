@@ -1,5 +1,5 @@
-**## Features**
-* Real User Monitroing : The java agent injects a JavaScript plugin in html pages which measures the performance characteristicsof real-world page loads and interactions :
+## Features
+* **Real User Monitroing** : The java agent injects a JavaScript plugin in html pages which measures the performance characteristicsof real-world page loads and interactions :
     * Measure a page’s perceived performance
     * Collect browser WebTiming information
     * Measure perceived performance of content loaded dynamically
