@@ -8,13 +8,13 @@
     * Request/page tagging
     * Measure DNS latency
     * Measure a random sample of users instead of all users
-* **System resources monitoring** throught the Sigar API which provides a portable interface for gathering system information such as:
+* **System resources monitoring** throught the Sigar API which provides a portable interface for gathering system information such as :
    * System memory, swap, cpu, load average, uptime
    * Per-process memory, cpu, credential info, state, arguments, environment, open files
    * File system detection and metrics
    * Network interface configuration info and metrics 
    
-   **The following platforms are currently supported:**
+   **The following platforms are currently supported :**
    
    os | arch | version
    ----- | ---- | ---------------------
@@ -29,6 +29,13 @@
     Mac OS X | PowerPC | (10.4)
     
 * **Jvm Monitoring (JMX)**
+   * Memory 
+   * Threads
+   * Data Sources
+   * Garbage Collection
+   * Class Loading
+   * Compilation
+   * Uptime
 * **Deep Dive into application source code**
 * **SQL monitoring for commercial and free databases which have endorsed the JDBC TM database access API and have built or are building JDBC-based products:**
    * H2
