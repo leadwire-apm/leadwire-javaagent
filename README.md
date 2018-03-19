@@ -1,13 +1,13 @@
 **## Features**
 - Real User Monitroing : The java agent injects a JavaScript plugin in html pages which measures the performance characteristicsof real-world page loads and interactions :
-  *Measure a page’s perceived performance
-  *Collect browser WebTiming information
-  *Measure perceived performance of content loaded dynamically
-  *Measure a user’s bandwidth along with page load time
-  *Measure HTTP latency
-  *Request/page tagging
-  *Measure DNS latency
-  *Measure a random sample of users instead of all users
+* Measure a page’s perceived performance
+* Collect browser WebTiming information
+* Measure perceived performance of content loaded dynamically
+* Measure a user’s bandwidth along with page load time
+* Measure HTTP latency
+* Request/page tagging
+* Measure DNS latency
+* Measure a random sample of users instead of all users
 - System resources monitoring throught the Sigar API which provides a portable interface for gathering system information such as:
     System memory, swap, cpu, load average, uptime
     Per-process memory, cpu, credential info, state, arguments, environment, open files
