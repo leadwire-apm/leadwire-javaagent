@@ -8,6 +8,7 @@
     * Request/page tagging
     * Measure DNS latency
     * Measure a random sample of users instead of all users
+    
   **The following web browsers are currently supported :**   
    * IE9+
    * Chrome
