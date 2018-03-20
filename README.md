@@ -9,7 +9,7 @@
     * Measure DNS latency
     * Measure a random sample of users instead of all users
     
-  **The following web browsers are currently supported :**   
+  The following web browsers are currently supported :   
    * IE9+
    * Chrome
    * Firefox 7+
@@ -30,7 +30,7 @@ Enable package, class and method level traces throught aspectj library
    * File system detection and metrics
    * Network interface configuration info and metrics 
    
-   **The following platforms are currently supported :**
+   The following platforms are currently supported :
    
    os | arch | version
    ----- | ---- | ---------------------
