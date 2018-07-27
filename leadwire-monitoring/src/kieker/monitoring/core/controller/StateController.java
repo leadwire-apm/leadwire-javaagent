@@ -39,6 +39,7 @@ public final class StateController extends AbstractController implements IStateC
 	private final boolean debug;
 	private boolean rumEnable;
 	private final String rumServer;
+	private final String appUuid;
 	private final long sqlThreshold;
 	private boolean jvmSamplingEnabled;
 	private boolean systemSamplingEnabled;
@@ -65,6 +66,7 @@ public final class StateController extends AbstractController implements IStateC
 		this.monitoringEnabled = configuration.getBooleanProperty(ConfigurationFactory.MONITORING_ENABLED);
 		this.debug = configuration.getBooleanProperty(ConfigurationFactory.DEBUG);
 		this.rumServer = configuration.getStringProperty(ConfigurationFactory.RUM_SERVER);
+		this.appUuid = configuration.getStringProperty(ConfigurationFactory.APP_UUID);
 		this.rumEnable = configuration.getBooleanProperty(ConfigurationFactory.RUM_ENABLE);
 		this.sqlThreshold= configuration.getIntProperty(ConfigurationFactory.SQL_THRESHOLD);
 		this.jvmSamplingEnabled = configuration.getBooleanProperty(ConfigurationFactory.JVM_SAMPL_ENABLE);
@@ -234,6 +236,16 @@ public final class StateController extends AbstractController implements IStateC
 	@Override
 	public String getRumServer() {
 		return rumServer;
+	}
+	
+	@Override
+	public String getAppUuid() {
+		
+		String value=System.getProperty("leadwire.agent.name");
+		if (value != null && !value.equals(""))
+		return value;
+		else
+		return appUuid;
 	}
 
 	@Override

@@ -21,9 +21,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
+
 
 /**
  * @author Wassim Dhib
@@ -35,35 +34,40 @@ import javax.servlet.http.HttpServletResponseWrapper;
 public class HtmlResponseWrapper extends HttpServletResponseWrapper {
 
 	private final ByteArrayOutputStream capture;
-	private ServletOutputStream output;
+	private javax.servlet.ServletOutputStream output;
 	private PrintWriter writer;
+	
+	public HtmlResponseWrapper(Object rep) {		
+		super((javax.servlet.http.HttpServletResponse) rep);
+		capture = new ByteArrayOutputStream(((javax.servlet.http.HttpServletResponse) rep).getBufferSize());
+	}
 
-	public HtmlResponseWrapper(HttpServletResponse rep) {		
+	public HtmlResponseWrapper(javax.servlet.http.HttpServletResponse rep) {		
 		super(rep);
-		capture = new ByteArrayOutputStream(rep.getBufferSize());
+		capture = new java.io.ByteArrayOutputStream(rep.getBufferSize());
 	}
 
 	@Override
-	public ServletOutputStream getOutputStream() {
+	public javax.servlet.ServletOutputStream getOutputStream() {
 		if (writer != null) {
-			throw new IllegalStateException(
+			throw new java.lang.IllegalStateException(
 					"getWriter() has already been called on this response.");
 	}
 
 	if (output == null) {
-		output = new ServletOutputStream() {
+		output = new javax.servlet.ServletOutputStream() {
 			@Override
-			public void write(int b) throws IOException {
+			public void write(int b) throws java.io.IOException {
 				capture.write(b);
 			}
 
 			@Override
-			public void flush() throws IOException {
+			public void flush() throws java.io.IOException {
 				capture.flush();
 			}
 
 			@Override
-			public void close() throws IOException {
+			public void close() throws java.io.IOException {
 				capture.close();
 			}
 		};
@@ -73,22 +77,20 @@ public class HtmlResponseWrapper extends HttpServletResponseWrapper {
 }
 
 @Override
-public PrintWriter getWriter() throws IOException {
+public java.io.PrintWriter getWriter() throws java.io.IOException {
 	if (output != null) {
-		throw new IllegalStateException(
-				"getOutputStream() has already been called on this response.");
+		throw new java.lang.IllegalStateException("getOutputStream() has already been called on this response.");
 		}
 
 		if (writer == null) {
-			writer = new PrintWriter(new OutputStreamWriter(capture,
-					getCharacterEncoding()));
+			writer = new java.io.PrintWriter(new java.io.OutputStreamWriter(capture,getCharacterEncoding()));
 		}
 
 		return writer;
 	}
 
 	@Override
-	public void flushBuffer() throws IOException {
+	public void flushBuffer() throws java.io.IOException {
 		super.flushBuffer();
 
 		if (writer != null) {
@@ -98,7 +100,7 @@ public PrintWriter getWriter() throws IOException {
 		}
 	}
 
-	public byte[] getCaptureAsBytes() throws IOException {
+	public byte[] getCaptureAsBytes() throws java.io.IOException {
 		if (writer != null) {
 			writer.close();
 		} else if (output != null) {
@@ -108,7 +110,7 @@ public PrintWriter getWriter() throws IOException {
 		return capture.toByteArray();
 	}
 
-	public String getCaptureAsString() throws IOException {
+	public String getCaptureAsString() throws java.io.IOException {
 		return new String(getCaptureAsBytes(), getCharacterEncoding());
 	}
 

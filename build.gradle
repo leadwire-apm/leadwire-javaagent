@@ -696,9 +696,12 @@ task aspectJJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
   
     
     
-   from fileTree(dir: 'lib', include: 'servlet-api*.jar').collect {
+   
+    
+    from fileTree(dir: 'lib', include: 'javassist*.jar').collect {
         zipTree(it)
     }
+    
     from file("lib/aspectjweaver-${libAspectjVersion}.LICENSE")
     
     from configurations.resultJar.collect { it.isDirectory() ? it : zipTree(it) }

@@ -5,6 +5,7 @@ dependencies {
 	compile project(':leadwire-common')
 	
 	compile resolveLibrary('http*.jar')
+	compile resolveLibrary('javassist*.jar')
 	
 	compile 'com.rabbitmq:amqp-client:4.2.1'
 	compile resolveLibrary('javax.jms-*.jar')
@@ -58,7 +59,8 @@ task iajc(dependsOn: classes) {
            
             classpath {
             	fileset(dir: '../lib', includes: "http*.jar")
-                fileset(dir: '../lib', includes: "aspectjweaver-*.jar")
+            	fileset(dir: '../lib', includes: "javassist*.jar")
+            	fileset(dir: '../lib', includes: "aspectjweaver-*.jar")
                 fileset(dir: '../lib', includes: "aspectjrt-*.jar")
 				fileset(dir: '../lib/framework-libs', includes: "javax.servlet-*.jar")
                 fileset(dir: '../lib/framework-libs', includes: "jsr311-api-1.1.1.jar")

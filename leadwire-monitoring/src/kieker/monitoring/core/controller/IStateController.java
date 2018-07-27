@@ -175,4 +175,14 @@ public interface IStateController {
 	 */
 	
 	long getSqlThreshold();
+	
+	
+	/**
+	 * returns the app uuid
+	 *  
+	 * @since 1.13
+	 */
+	String getAppUuid();
+
+	
 }

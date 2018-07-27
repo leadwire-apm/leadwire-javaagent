@@ -16,6 +16,8 @@
     <include within="com.microsoft.sqlserver.jdbc..*"/>
     <include within="oracle.jdbc..*"/>
 	<include within="net.sf.log4jdbc..*"/>
+	<include within="jdbc.gupta.sqlbase..*"/>
+	
 
   </weaver>  
   <aspects>

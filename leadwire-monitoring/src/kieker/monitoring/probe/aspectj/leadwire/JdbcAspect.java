@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2017 Lead Wire (https://leadwire-apm.com)
+ * Copyright 2018 Lead Wire (https://leadwire.io)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,9 @@ package kieker.monitoring.probe.aspectj.leadwire;
 
 
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Field;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
@@ -136,7 +133,7 @@ final long tin = TIME.getTime();
 			} finally {
 				
 				final long tout = TIME.getTime();
-				if (tout-tin > SQL_THRESHOLD) {
+				if (tout-tin > SQL_THRESHOLD && sqlStatement.length() < 65534) {
 				CTRLINST.newMonitoringRecord(new JDBCOperationExecutionRecord(sqlStatement, sessionId, traceId, tin, tout, hostname, eoi, ess));
 				}
 				SESSIONREGISTRY.unsetThreadLocalSessionId();

@@ -145,8 +145,8 @@ public static final MonitoringController createInstance(final Configuration conf
 
 	
 	
-	/*
-	DefaultProfilerPluginSetupContext aContext = new DefaultProfilerPluginSetupContext(new DefaultProfilerConfig());
+	
+	/*DefaultProfilerPluginSetupContext aContext = new DefaultProfilerPluginSetupContext(new DefaultProfilerConfig());
 	final TomcatConfig aConfig = new TomcatConfig(aContext.getConfig());
     TomcatDetector tomcatDetector = new TomcatDetector(aConfig.getTomcatBootstrapMains());
     aContext.addApplicationTypeDetector(tomcatDetector);
@@ -192,14 +192,14 @@ public static final MonitoringController createInstance(final Configuration conf
 	
 	final MemorySampler memorySampler = new MemorySampler();
 	final ThreadsStatusSampler tsSampler = new ThreadsStatusSampler();
-	final TomcatJdbcConnectionPoolSampler jdbcSampler = new TomcatJdbcConnectionPoolSampler();
+	//final TomcatJdbcConnectionPoolSampler jdbcSampler = new TomcatJdbcConnectionPoolSampler();
 
 
 
 
 	monitoringController.schedulePeriodicSampler(memorySampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
 	monitoringController.schedulePeriodicSampler(tsSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
-	monitoringController.schedulePeriodicSampler(jdbcSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
+	//monitoringController.schedulePeriodicSampler(jdbcSampler, samplingOffset, samplingPeriod, TimeUnit.SECONDS);
 
 	}	
 		
@@ -490,6 +490,11 @@ private static final class LazyHolder { // NOCS
 	@Override
 	public long getSqlThreshold() {
 		return this.stateController.getSqlThreshold();
+	}
+	
+	@Override
+	public String getAppUuid() {
+		return this.stateController.getAppUuid();
 	}
 	
 
