@@ -196,7 +196,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 
 						if ( isBeaconed == null ) {		
 
-							String rum= "\n"
+							/*String rum= "\n"
 									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/boomerang.js\"></script> "
 									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/plugins/navtiming.js\"></script> "
 									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/plugins/rt.js\"></script> "
@@ -209,6 +209,63 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 									+ " }); "
 									+ "</script> "
 									+ "\n";
+									*/
+							
+							String rum ="<script>\n" + 
+									"(function(){\n" + 
+									"  // Boomerang Loader Snippet version 10\n" + 
+									"  if (window.BOOMR && (window.BOOMR.version || window.BOOMR.snippetExecuted)) {\n" + 
+									"    return;\n" + 
+									"  }\n" + 
+									"\n" + 
+									"  window.BOOMR = window.BOOMR || {};\n" + 
+									"  window.BOOMR.snippetExecuted = true;\n" + 
+									"  \n" + 
+									"  BOOMR_sessionid=\""+sessionId+"\";\n" + 
+									"  BOOMR_traceid=\""+traceId+"\";\n" + 
+									"  BOOMR_appuuid=\""+appUuid+"\";\n" + 
+									"\n" + 
+									"  var dom, doc, where, iframe = document.createElement(\"iframe\"), win = window;\n" + 
+									"\n" + 
+									"  function boomerangSaveLoadTime(e) {\n" + 
+									"    win.BOOMR_onload = (e && e.timeStamp) || new Date().getTime();\n" + 
+									"  }\n" + 
+									"\n" + 
+									"  if (win.addEventListener) {\n" + 
+									"    win.addEventListener(\"load\", boomerangSaveLoadTime, false);\n" + 
+									"  } else if (win.attachEvent) {\n" + 
+									"    win.attachEvent(\"onload\", boomerangSaveLoadTime);\n" + 
+									"  }\n" + 
+									"\n" + 
+									"  iframe.src = \"javascript:void(0)\";\n" + 
+									"  iframe.title = \"\";\n" + 
+									"  iframe.role = \"presentation\";\n" + 
+									"  (iframe.frameElement || iframe).style.cssText = \"width:0;height:0;border:0;display:none;\";\n" + 
+									"  where = document.getElementsByTagName(\"script\")[0];\n" + 
+									"  where.parentNode.insertBefore(iframe, where);\n" + 
+									"\n" + 
+									"  try {\n" + 
+									"    doc = iframe.contentWindow.document;\n" + 
+									"  } catch (e) {\n" + 
+									"    dom = document.domain;\n" + 
+									"    iframe.src = \"javascript:var d=document.open();d.domain='\" + dom + \"';void(0);\";\n" + 
+									"    doc = iframe.contentWindow.document;\n" + 
+									"  }\n" + 
+									"\n" + 
+									"  doc.open()._l = function() {\n" + 
+									"    var js = this.createElement(\"script\");\n" + 
+									"    if (dom) {\n" + 
+									"      this.domain = dom;\n" + 
+									"    }\n" + 
+									"    js.id = \"boomr-if-as\";\n" + 
+									"    js.src = 'https://"+rumServer+"/rum/boomerang-1.0.0.min.js';\n" + 
+									"    BOOMR_lstart = new Date().getTime();\n" + 
+									"    this.body.appendChild(js);\n" + 
+									"  };\n" + 
+									"  doc.write('<bo' + 'dy onload=\"document._l();\">');\n" + 
+									"  doc.close();\n" + 
+									"})();\n" + 
+									"</script>";
 
 							int indexOfHead = _sb.indexOf("</head>");
 
