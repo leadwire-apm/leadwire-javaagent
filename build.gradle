@@ -8,8 +8,12 @@ buildscript {
 
     dependencies {
         classpath 'gradle.plugin.gradle-plugins:jartest:1.0.1'			// necessary to depend tests on tests
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+        
     }
 }
+
+
 
 plugins {
     id 'de.aaschmid.cpd' version '1.0'	// cpd plugin
@@ -19,12 +23,18 @@ plugins {
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'signing'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'java'
 
 eclipse {
 	classpath {
 		defaultOutputDir = file('build-eclipse')
 	}
 }
+
+
+        
+        
 
 configurations {
 	resultJar
@@ -34,6 +44,8 @@ dependencies {
 	resultJar project(path: ':leadwire-tools', configuration: 'resultJar')
 	resultJar 'org.jctools:jctools-core:2.1.0'
 }
+
+ 
 
 
 // We have multiple subprojects - but we do not want all of them in our JAR files.
@@ -520,7 +532,7 @@ task updateLicenseHeaderYear() {
   }
 }
 
-compileJava.dependsOn replaceHardCodedVersionNames
+//compileJava.dependsOn replaceHardCodedVersionNames
 
 def reportingCompatibleJavaVersionPresent() {
     switch (JavaVersion.current()) {
@@ -671,22 +683,66 @@ task emfJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
     }
 }
 
-task aspectJJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
+task aspectJJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar, dependsOn: mainSubprojects.tasks["build"]) {
+
+
+  
     // default archiveName is [baseName]-[appendix]-[version]-[classifier].[extension]
     classifier = 'aspectj'
     configure allArtifacts
     configure licence
     configure aopxml
+    
+    
+    //  configurations = [configurations.resultJar]
+    
+    
 
+
+    
+     from fileTree(dir: 'lib', include: 'jctools*.jar').collect {
+               relocate 'org.jctools', 'shadow.org.jctools'
+     
+        zipTree(it)
+    }
+    
+     from fileTree(dir: 'lib', include: 'jcommander*.jar').collect {
+               relocate 'com.beust', 'shadow.com.beust'
+     
+        zipTree(it)
+    }
+    
+     from fileTree(dir: 'lib', include: 'gson-*.jar').collect {
+               relocate 'com.google.gson', 'shadow.com.google.gson'
+     
+        zipTree(it)
+    }
+    
+     from fileTree(dir: 'lib', include: 'commons-cli*.jar').collect {
+        zipTree(it)
+    }
+    
+  
+    
     from fileTree(dir: 'lib', include: 'aspectjweaver-*.jar').collect {
+      relocate 'org.aspectj', 'shadow.org.aspectj'
+        relocate 'aj.org.objectweb.asm', 'shadow.aj.org.objectweb.asm'
+        
+      
         zipTree(it)
     }
 
     from fileTree(dir: 'lib/sigar', include: 'sigar*.jar').collect {
+    
+         // relocate 'org.hyperic', 'shadow.org.hyperic'
+    
+    
         zipTree(it)
     }
     
     from fileTree(dir: 'lib', include: 'http*.jar').collect {
+             relocate 'org.apache', 'shadow.org.apache'
+   
         zipTree(it)
     }
     
@@ -699,20 +755,31 @@ task aspectJJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
    
     
     from fileTree(dir: 'lib', include: 'javassist*.jar').collect {
+              relocate 'javassist', 'shadow.javassist'
+    
         zipTree(it)
     }
     
     from file("lib/aspectjweaver-${libAspectjVersion}.LICENSE")
     
-    from configurations.resultJar.collect { it.isDirectory() ? it : zipTree(it) }
+    
+        
+    
+    from configurations.resultJar.collect { it }
 
-    manifest = project.manifest {
-        from sharedManifest
+
+
+ 
+        
+   // manifest = project.manifest {
+     //   from sharedManifest
+        manifest {
         attributes(
-                "Can-Redefine-Classes": 'true',
+               "Can-Redefine-Classes": 'true',
                 "Premain-Class": 'kieker.monitoring.probe.aspectj.AspectJLoader'
-        )
-        attributes(
+       		)
+       
+       			 attributes(
                 "Specification-Title": "AspectJ Weaver Classes",
                 "Specification-Version": libAspectjVersion,
                 "Specification-Vendor": "aspectj.org",
@@ -720,11 +787,21 @@ task aspectJJar(type: Jar, dependsOn: mainSubprojects.tasks["build"]) {
                 "Implementation-Version": libAspectjVersion,
                 "Implementation-Vendor": "aspectj.org",
                 "Can-Redefine-Classes": "true",
-                "Premain-Class": "org.aspectj.weaver.loadtime.Agent",
-                "org/aspectj/weaver/" // The section name
+                "Premain-Class": "shadow.org.aspectj.weaver.loadtime.Agent",
+                "shadow/org/aspectj/weaver/" // The section name
         )
     }
+    
+
+
+
 }
+
+
+
+ 
+
+
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -740,7 +817,6 @@ artifacts {
     archives mainJar
     archives emfJar
     archives aspectJJar
-
     archives sourcesJar
     archives javadocJar
 }
@@ -923,6 +999,9 @@ distribute.mustRunAfter enableRTests
 task TravisCI(group: 'TravisCI', dependsOn: [aspectJJar]) {
     description = 'Builds and tests the JAR files of the Kieker Framework'
 }
+
+
+
 
 task jenkinsNightlyBuild(dependsOn: [startRServe, enableRTests, distribute, checkReleaseArchives, uploadArchives]) {
     description = 'Builds and tests the release of the Kieker Framework'

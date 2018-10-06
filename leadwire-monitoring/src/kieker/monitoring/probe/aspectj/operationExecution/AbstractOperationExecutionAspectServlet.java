@@ -73,7 +73,7 @@ final String sessionId = (req != null) ? req.getSession(true).getId() : null; //
 		retVal = thisJoinPoint.proceed(arg0);
 		
 		if (CTRLINST.isRumEnable()){
-			final String rumServer = CTRLINST.getRumServer();
+			final String apmServer = CTRLINST.getapmServer();
 
 		String isBeaconed = null;
 		String content = capturingResponseWrapper.getCaptureAsString();
@@ -86,13 +86,13 @@ final String sessionId = (req != null) ? req.getSession(true).getId() : null; //
 				isBeaconed="true";
 			}
 			if ( isBeaconed == null ) {								
-				String rum= "<script src=\"http://"+rumServer+"/boomerang-master/boomerang.js\"></script> "
-						+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/rt.js\"></script> "
+				String rum= "<script src=\"http://"+apmServer+"/boomerang-master/boomerang.js\"></script> "
+						+ "<script src=\"http://"+apmServer+"/boomerang-master/plugins/rt.js\"></script> "
 						+ "<script type=\"text/javascript\" > "
 						+ "  BOOMR.init({ "
 						+ "	traceid: \""+traceId+"\","
 						+ "	sessionid: \""+sessionId+"\","
-						+ "      beacon_url: \"http://"+rumServer+"/\" "
+						+ "      beacon_url: \"http://"+apmServer+"/\" "
 						+ " }); "
 						+ "</script>  ";										
 						_sb.insert(0, rum );
@@ -139,7 +139,7 @@ try {
 	retVal = thisJoinPoint.proceed(arg0);
 	
 	if (CTRLINST.isRumEnable()){
-		final String rumServer = CTRLINST.getRumServer();
+		final String apmServer = CTRLINST.getapmServer();
 
 	String isBeaconed = null;
 	String content = capturingResponseWrapper.getCaptureAsString();
@@ -152,13 +152,13 @@ try {
 			isBeaconed="true";
 		}
 		if ( isBeaconed == null ) {								
-			String rum= "<script src=\"http://"+rumServer+"/boomerang-master/boomerang.js\"></script> "
-					+ "<script src=\"http://"+rumServer+"/boomerang-master/plugins/rt.js\"></script> "
+			String rum= "<script src=\"http://"+apmServer+"/boomerang-master/boomerang.js\"></script> "
+					+ "<script src=\"http://"+apmServer+"/boomerang-master/plugins/rt.js\"></script> "
 					+ "<script type=\"text/javascript\" > "
 					+ "  BOOMR.init({ "
 					+ "	traceid: \""+traceId+"\","
 					+ "	sessionid: \""+sessionId+"\","
-					+ "      beacon_url: \"http://"+rumServer+"/\" "
+					+ "      beacon_url: \"http://"+apmServer+"/\" "
 					+ " }); "
 					+ "</script>  ";										
 					_sb.insert(0, rum );

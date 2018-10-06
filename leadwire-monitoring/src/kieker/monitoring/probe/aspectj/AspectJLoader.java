@@ -16,17 +16,13 @@
 
 package kieker.monitoring.probe.aspectj;
 
-import java.io.IOException;
 import java.lang.instrument.Instrumentation;
-import java.net.URL;
-import java.util.Enumeration;
 
-import org.aspectj.bridge.Constants;
 import org.aspectj.weaver.loadtime.Agent;
 
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
-
+	
 /**
  * @author Nils Christian Ehmke, Jan Waller
  * 
@@ -34,10 +30,11 @@ import kieker.common.logging.LogFactory;
  */
 public final class AspectJLoader {
 
-	public static final String KIEKER_MONITORING_SKIP_DEFAULT_AOP_CONFIGURATION = "kieker.monitoring.skipDefaultAOPConfiguration";
-
-	private static final String DEFAULT_AOP_CONFIG = "META-INF/aop.example.xml";
-	private static final Log LOG = LogFactory.getLog(AspectJLoader.class);
+	private static final String JBOSS_MODULES_SYSTEM_PKGS = "jboss.modules.system.pkgs";
+	private static final String AGENT_BASE_PACKAGE = "kieker,shadow.org.aspectj";
+	private static final String SHADOW_AOP_CONFIG = "META-INF/shadow-aop.xml";
+	
+	static final Log LOG = LogFactory.getLog(AspectJLoader.class); // NOPMD package for inner class
 
 	private AspectJLoader() {
 		// Avoid instantiation
@@ -52,46 +49,27 @@ public final class AspectJLoader {
 	 *            java API instrumentation object
 	 */
 	public static void premain(final String options, final Instrumentation instrumentation) {
-		if (!AspectJLoader.checkConfigurationFileAvailable()) {
-			final URL aspectConfigURL = AspectJLoader.class.getClassLoader().getResource(DEFAULT_AOP_CONFIG);
-			LOG.info("No AspectJ configuration file found. Using Kieker's default AspectJ configuration file (" + aspectConfigURL + ").");
-			AspectJLoader.addKiekerDefaultConfigFile();
+		
+		LOG.info(ServiceNameUtil.getDefaultServiceName());
+		
+		if (System.getProperty("shadow.org.aspectj.weaver.loadtime.configuration") == null) {
+		System.setProperty("shadow.org.aspectj.weaver.loadtime.configuration", SHADOW_AOP_CONFIG);
 		}
-
+				
+		/**
+		 * Makes the kieker package visible from all modules
+		 */
+		final String systemPackages = System.getProperty(JBOSS_MODULES_SYSTEM_PKGS);
+        if (systemPackages != null) {
+            System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, systemPackages + "," + AGENT_BASE_PACKAGE);
+        } else {
+            System.setProperty(JBOSS_MODULES_SYSTEM_PKGS, AGENT_BASE_PACKAGE);
+        }	
+		
 		Agent.premain(options, instrumentation);
 	}
-
-	private static boolean checkConfigurationFileAvailable() {
-		if (Boolean.getBoolean(KIEKER_MONITORING_SKIP_DEFAULT_AOP_CONFIGURATION)) {
-			return true;
-		}
-
-		LOG.info("Using Kieker's AspectJLoader. This is not recommended for multi-classloader environments such as JavaEE and OSGI. Use the additional VM"
-				+ " parameter '-D" + KIEKER_MONITORING_SKIP_DEFAULT_AOP_CONFIGURATION + "=true'. to disable Kieker's AspectJLoader");
-
-		if (null != System.getProperty("aj5.def")) {
-			return true;
-		}
-
-		if (null != System.getProperty("org.aspectj.weaver.loadtime.configuration")) {
-			return true;
-		}
-
-		final ClassLoader cl = ClassLoader.getSystemClassLoader();
-		try {
-			final Enumeration<URL> aopUserXMLs = cl.getResources(Constants.AOP_USER_XML);
-			final Enumeration<URL> aopAJCXMLs = cl.getResources(Constants.AOP_AJC_XML);
-			final Enumeration<URL> aopOSGIXMLs = cl.getResources(Constants.AOP_OSGI_XML);
-
-			final boolean anyConfigFileAvailable = aopUserXMLs.hasMoreElements() || aopAJCXMLs.hasMoreElements() || aopOSGIXMLs.hasMoreElements();
-			return anyConfigFileAvailable; // NOPMD
-		} catch (final IOException ex) {
-			return false;
-		}
-	}
-
-	private static void addKiekerDefaultConfigFile() {
-		System.setProperty("org.aspectj.weaver.loadtime.configuration", DEFAULT_AOP_CONFIG);
-	}
+	
+	
+   
 
 }

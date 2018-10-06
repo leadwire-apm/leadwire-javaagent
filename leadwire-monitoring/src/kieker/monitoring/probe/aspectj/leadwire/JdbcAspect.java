@@ -24,7 +24,7 @@ import org.aspectj.lang.annotation.Aspect;
 
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
-import kieker.common.record.jdbc.JDBCOperationExecutionRecord;
+import kieker.common.record.jdbc.JdbcOperationExecutionRecord;
 import kieker.monitoring.core.controller.IMonitoringController;
 import kieker.monitoring.core.controller.MonitoringController;
 import kieker.monitoring.core.registry.ControlFlowRegistry;
@@ -134,7 +134,7 @@ final long tin = TIME.getTime();
 				
 				final long tout = TIME.getTime();
 				if (tout-tin > SQL_THRESHOLD && sqlStatement.length() < 65534) {
-				CTRLINST.newMonitoringRecord(new JDBCOperationExecutionRecord(sqlStatement, sessionId, traceId, tin, tout, hostname, eoi, ess));
+				CTRLINST.newMonitoringRecord(new JdbcOperationExecutionRecord(sqlStatement, sessionId, traceId, tin, tout, hostname, eoi, ess));
 				}
 				SESSIONREGISTRY.unsetThreadLocalSessionId();
 				

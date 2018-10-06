@@ -17,6 +17,8 @@ package kieker.common.record.flow.trace.concurrency;
 
 import java.nio.BufferOverflowException;
 
+import com.google.gson.Gson;
+
 import kieker.common.record.flow.trace.AbstractTraceEvent;
 import kieker.common.record.io.IValueDeserializer;
 import kieker.common.record.io.IValueSerializer;
@@ -186,6 +188,14 @@ public class SplitEvent extends AbstractTraceEvent  {
 		if (this.getTraceId() != castedRecord.getTraceId()) return false;
 		if (this.getOrderIndex() != castedRecord.getOrderIndex()) return false;
 		return true;
+	}
+
+	@Override
+	public String toJson()   {
+
+		Gson gson = new Gson();
+		return gson.toJson(this);  
+
 	}
 	
 }

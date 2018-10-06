@@ -5,6 +5,8 @@ dependencies {
 	compile resolveLibrary('commons-logging-*.jar')
 	compile resolveLibrary('slf4j-api-*.jar')
 	compile resolveLibrary('framework-libs/cxf/cxf-*.jar')
+	compile 'com.google.code.gson:gson:2.8.5'
+	
 }
 
 eclipse {

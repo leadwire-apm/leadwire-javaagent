@@ -14,22 +14,29 @@
  * limitations under the License.
  ***************************************************************************/
 package kieker.monitoring.writer.http;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.CharBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 
 import kieker.common.configuration.Configuration;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.io.TextValueSerializer;
+import kieker.monitoring.core.controller.IMonitoringController;
+import kieker.monitoring.core.controller.MonitoringController;
 import kieker.monitoring.core.controller.ReceiveUnfilteredConfiguration;
 import kieker.monitoring.registry.IRegistryListener;
 import kieker.monitoring.registry.IWriterRegistry;
@@ -51,25 +58,15 @@ import kieker.monitoring.writer.AbstractMonitoringWriter;
 public class httpWriter extends AbstractMonitoringWriter implements IRegistryListener<String> {
 
 	public static final String PREFIX = httpWriter.class.getName() + ".";
-	
-	private final IWriterRegistry<String> writerRegistry;
-	private final TextValueSerializer serializer;
-	private final CharBuffer buffer = CharBuffer.allocate(65535);
+		
+	private String apmServer;
 
-	private String httpServer;
+	private String appUuid;
 
-
-	/** The name of the configuration determining whether to flush upon each incoming registry entry. */
-	public static final String HTTP_SERVER = PREFIX + "httpServer";
-
-	
+		
 	public httpWriter(final Configuration configuration) {
 		super(configuration);
 		
-		httpServer = configuration.getStringProperty(HTTP_SERVER, "UTF-8");
-
-		this.serializer = TextValueSerializer.create(this.buffer);
-		this.writerRegistry = new WriterRegistry(this);
 	}
 
 	@Override
@@ -79,49 +76,27 @@ public class httpWriter extends AbstractMonitoringWriter implements IRegistryLis
 
 	@Override
 	public void writeMonitoringRecord(final IMonitoringRecord record)  {
-
-		final String recordClassName = record.getClass().getName();
-		this.writerRegistry.register(recordClassName);
-
-		StringBuilder _sb = new StringBuilder('$');
-
 		
-		this.buffer.clear();
-		
-		_sb.append(this.writerRegistry.getId(recordClassName));
-		_sb.append(';');
-		_sb.append(record.getLoggingTimestamp());
+		apmServer = configuration.getStringProperty("kieker.monitoring.apmServer");
+		appUuid = (System.getProperty("leadwire.agent.name") ==  null) ? "no.agent.name" : System.getProperty("leadwire.agent.name");
+				
+		HttpClient httpClient = HttpClientBuilder.create().build();
+	    HttpPost request;
+		request = new HttpPost("https://"+apmServer+"/"+appUuid+"/apm");
+						
+		StringEntity params =new StringEntity(record.toJson(), ContentType.APPLICATION_FORM_URLENCODED);
+		request.setEntity(params);
 
-		record.serialize(this.serializer);
-
-		this.buffer.flip();
-		_sb.append(this.buffer.toString());
-		
-			
-		    HttpClient httpClient = HttpClientBuilder.create().build();
-		    
-		   
-		    
-	        HttpPost request;
+      HttpResponse response = null;
+      
 			try {
-				request = new HttpPost("http://"+this.httpServer+"/?"+ URLEncoder.encode(_sb.toString(), "UTF-8"));
-		
-
-	        HttpResponse response = null;
-			try {
-				response = httpClient.execute(request);
+						response = httpClient.execute(request);
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-		    // System.out.println(_sb.toString());
-		        
-			} catch (UnsupportedEncodingException e1) {
-				e1.printStackTrace();
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 			}
 			
 	       

@@ -17,6 +17,8 @@ package kieker.common.record.flow.thread;
 
 import java.nio.BufferOverflowException;
 
+import com.google.gson.Gson;
+
 import kieker.common.record.flow.thread.AbstractThreadBasedEvent;
 import kieker.common.record.io.IValueDeserializer;
 import kieker.common.record.io.IValueSerializer;
@@ -204,6 +206,14 @@ public class AfterThreadBasedEvent extends AbstractThreadBasedEvent  {
 		if (!this.getOperationSignature().equals(castedRecord.getOperationSignature())) return false;
 		if (!this.getClassSignature().equals(castedRecord.getClassSignature())) return false;
 		return true;
+	}
+
+	@Override
+	public String toJson()   {
+
+		Gson gson = new Gson();
+		return gson.toJson(this);  
+
 	}
 	
 }

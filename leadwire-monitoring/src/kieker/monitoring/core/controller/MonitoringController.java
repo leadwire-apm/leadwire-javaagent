@@ -20,28 +20,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.hyperic.sigar.CpuPerc;
-
 import kieker.common.configuration.Configuration;
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.misc.KiekerMetadataRecord;
 import kieker.common.util.Version;
-import kieker.monitoring.bootstrap.config.DefaultProfilerConfig;
-import kieker.monitoring.bootstrap.resolver.ApplicationServerTypePluginResolver;
-import kieker.monitoring.bootstrap.resolver.ConditionProvider;
-import kieker.monitoring.common.trace.ServiceType;
 import kieker.monitoring.core.configuration.ConfigurationFactory;
 import kieker.monitoring.core.sampler.ISampler;
 import kieker.monitoring.core.sampler.ScheduledSamplerJob;
-import kieker.monitoring.core.signaturePattern.SignatureFactory;
-import kieker.monitoring.plugins.tomcat.TomcatConfig;
-import kieker.monitoring.plugins.tomcat.TomcatDetector;
-import kieker.monitoring.profiler.plugin.DefaultProfilerPluginSetupContext;
 import kieker.monitoring.sampler.mxbean.MemorySampler;
 import kieker.monitoring.sampler.mxbean.ThreadsStatusSampler;
-import kieker.monitoring.sampler.mxbean.TomcatJdbcConnectionPoolSampler;
 import kieker.monitoring.sampler.sigar.ISigarSamplerFactory;
 import kieker.monitoring.sampler.sigar.SigarSamplerFactory;
 import kieker.monitoring.sampler.sigar.samplers.CPUsDetailedPercSampler;
@@ -49,7 +38,7 @@ import kieker.monitoring.sampler.sigar.samplers.DiskUsageSampler;
 import kieker.monitoring.sampler.sigar.samplers.MemSwapUsageSampler;
 import kieker.monitoring.sampler.sigar.samplers.NetworkUtilizationSampler;
 import kieker.monitoring.timer.ITimeSource;
-
+	
 /**
  * @author Jan Waller
  *
@@ -142,18 +131,7 @@ public static final MonitoringController createInstance(final Configuration conf
 	if (monitoringController.isTerminated()) {
 		return monitoringController;
 	}
-
 	
-	
-	
-	/*DefaultProfilerPluginSetupContext aContext = new DefaultProfilerPluginSetupContext(new DefaultProfilerConfig());
-	final TomcatConfig aConfig = new TomcatConfig(aContext.getConfig());
-    TomcatDetector tomcatDetector = new TomcatDetector(aConfig.getTomcatBootstrapMains());
-    aContext.addApplicationTypeDetector(tomcatDetector);
-     
-    ApplicationServerTypePluginResolver aResolver = new ApplicationServerTypePluginResolver(aContext.getApplicationTypeDetectors(), ConditionProvider.DEFAULT_CONDITION_PROVIDER);
-    aResolver.resolve();
-	*/
 	
 	final long samplingOffset = monitoringController.getSamplingOffset();
 	final long samplingPeriod = monitoringController.getSamplingPeriod();
@@ -483,13 +461,24 @@ private static final class LazyHolder { // NOCS
 	}
 
 	@Override
-	public String getRumServer() {
-		return this.stateController.getRumServer();
+	public String getapmServer() {
+		return this.stateController.getapmServer();
 	}
+	
+	@Override
+	public String getCDNServer() {
+		return this.stateController.getCDNServer();
+	}
+	
 	
 	@Override
 	public long getSqlThreshold() {
 		return this.stateController.getSqlThreshold();
+	}
+	
+	@Override
+	public long getMethodThreshold() {
+		return this.stateController.getMethodThreshold();
 	}
 	
 	@Override

@@ -24,16 +24,15 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 
-import javassist.ClassClassPath;
 import javassist.ClassPool;
-
 import kieker.common.logging.Log;
 import kieker.common.logging.LogFactory;
-import kieker.common.record.controlflow.OperationExecutionRecord;
+import kieker.common.record.http.HttpOperationExecutionRecord;
 import kieker.monitoring.core.controller.IMonitoringController;
 import kieker.monitoring.core.controller.MonitoringController;
 import kieker.monitoring.core.registry.ControlFlowRegistry;
 import kieker.monitoring.core.registry.SessionRegistry;
+import kieker.monitoring.probe.aspectj.AbstractAspectJProbe;
 import kieker.monitoring.probe.aspectj.operationExecution.AbstractOperationExecutionAspect;
 import kieker.monitoring.timer.ITimeSource;
 
@@ -45,7 +44,7 @@ import kieker.monitoring.timer.ITimeSource;
 
 
 @Aspect
-public abstract class AbstractServletAspect extends AbstractOperationExecutionAspect {
+public abstract class AbstractServletAspect extends AbstractAspectJProbe {
 
 	private static final ControlFlowRegistry CFREGISTRY = ControlFlowRegistry.INSTANCE;
 	private static final SessionRegistry SESSIONREGISTRY = SessionRegistry.INSTANCE;
@@ -70,7 +69,6 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 
 		// collect data
 		final boolean entrypoint;
-		final String signature = this.signatureToLongString(thisJoinPoint.getSignature());
 		final String hostname = VMNAME;
 		String sessionId = SESSIONREGISTRY.recallThreadLocalSessionId();
 		final int eoi; // this is executionOrderIndex-th execution in this trace
@@ -92,7 +90,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 		
 		
 		// measure before
-		final long tin = TIME.getTime();
+		final long tin = TIME.getTime(); 
 
 		final Object req = (Object) thisJoinPoint.getArgs()[0];
 
@@ -102,7 +100,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 
 			Method aMethodgetSession = req.getClass().getMethod("getSession", boolean.class);
 			aMethodgetSession.setAccessible(Boolean.TRUE); 
-			Object aSession = (Object) aMethodgetSession.invoke(req, true);
+			Object aSession = (Object) aMethodgetSession.invoke(req, true); 
 
 			Method aMethodgetId = aSession.getClass().getMethod("getId");
 			aMethodgetId.setAccessible(Boolean.TRUE); 
@@ -137,11 +135,10 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 				////// Begin of javassist phase
 				ClassPool pool = ClassPool.getDefault();
 				
-				 Class<?> clazzcustomServletOutputStream = null;
 				 try {
-					 clazzcustomServletOutputStream = rep.getClass().getClassLoader().loadClass("kieker.monitoring.probe.aspectj.leadwire.javassist.customServletOutputStream");	 
+					 rep.getClass().getClassLoader().loadClass("kieker.monitoring.probe.aspectj.leadwire.javassist.customServletOutputStream");	 
 				 } catch (ClassNotFoundException e) {
-					 clazzcustomServletOutputStream = JavassistGenerator.generatecustomServletOutputStream("kieker.monitoring.probe.aspectj.leadwire.javassist.customServletOutputStream",rep.getClass().getClassLoader());
+					 JavassistGenerator.generatecustomServletOutputStream("kieker.monitoring.probe.aspectj.leadwire.javassist.customServletOutputStream",rep.getClass().getClassLoader());
 					 
 				 }
 				 		
@@ -154,23 +151,21 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 				 }
 				 					
 				  Class<?> aClassHttpServletResponse = Class.forName("javax.servlet.http.HttpServletResponse", true, rep.getClass().getClassLoader());
-				  ClassClassPath aClassClassPath2 = new ClassClassPath(aClassHttpServletResponse);
-				  pool.insertClassPath(aClassClassPath2);
+				//  ClassClassPath aClassClassPath2 = new ClassClassPath(aClassHttpServletResponse);
+				//  pool.insertClassPath(aClassClassPath2);
 				 
-				Constructor<?> aConstructor = clazzHtmlResponseWrapper.getDeclaredConstructor(aClassHttpServletResponse);
-			
-				
+				Constructor<?> aConstructor = clazzHtmlResponseWrapper.getDeclaredConstructor(aClassHttpServletResponse);				
 				Object capturingResponseWrapper = aConstructor.newInstance(rep);
-//				HtmlResponseWrapper capturingResponseWrapper = new HtmlResponseWrapper(rep);
 				
 				////// End of javassist phase
-
 				
 				Object[] arg0 = {req,capturingResponseWrapper};
 				retVal = thisJoinPoint.proceed(arg0);
 
 				if (CTRLINST.isRumEnable()){
-					final String rumServer = CTRLINST.getRumServer();
+					final String apmServer = CTRLINST.getapmServer();
+					final String cdnServer = CTRLINST.getCDNServer();
+
 					final String appUuid = CTRLINST.getAppUuid();
 
 
@@ -191,21 +186,21 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 							&& aContentType.contains("text/html")) {			
 						if (content.contains(appUuid) ) 
 						{
-							isBeaconed="true";
+							isBeaconed="true"; 
 						}
 
 						if ( isBeaconed == null ) {		
 
 							/*String rum= "\n"
-									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/boomerang.js\"></script> "
-									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/plugins/navtiming.js\"></script> "
-									+ "<script type=\"text/javascript\" src=\"https://"+rumServer+"/rum/boomerang-master/plugins/rt.js\"></script> "
+									+ "<script type=\"text/javascript\" src=\"https://"+apmServer+"/rum/boomerang-master/boomerang.js\"></script> "
+									+ "<script type=\"text/javascript\" src=\"https://"+apmServer+"/rum/boomerang-master/plugins/navtiming.js\"></script> "
+									+ "<script type=\"text/javascript\" src=\"https://"+apmServer+"/rum/boomerang-master/plugins/rt.js\"></script> "
 									+ "<script type=\"text/javascript\" > "
 									+ "  BOOMR.init({ "
 									+ "	traceid: \""+traceId+"\","
 									+ "	sessionid: \""+sessionId+"\","
 									+ "	appuuid: \""+appUuid+"\","
-									+ "      beacon_url: \"https://"+rumServer+"/rum/\" "
+									+ "      beacon_url: \"https://"+apmServer+"/rum/\" "
 									+ " }); "
 									+ "</script> "
 									+ "\n";
@@ -224,6 +219,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 									"  BOOMR_sessionid=\""+sessionId+"\";\n" + 
 									"  BOOMR_traceid=\""+traceId+"\";\n" + 
 									"  BOOMR_appuuid=\""+appUuid+"\";\n" + 
+									"  BOOMR_apmServer=\""+apmServer+"\";\n" + 
 									"\n" + 
 									"  var dom, doc, where, iframe = document.createElement(\"iframe\"), win = window;\n" + 
 									"\n" + 
@@ -258,7 +254,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 									"      this.domain = dom;\n" + 
 									"    }\n" + 
 									"    js.id = \"boomr-if-as\";\n" + 
-									"    js.src = 'https://"+rumServer+"/rum/boomerang-1.0.0.min.js';\n" + 
+									"    js.src = 'https://"+cdnServer+"/boomerang-1.0.0.min.js';\n" + 
 									"    BOOMR_lstart = new Date().getTime();\n" + 
 									"    this.body.appendChild(js);\n" + 
 									"  };\n" + 
@@ -292,7 +288,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 
 					Method aMethodgetWriter = rep.getClass().getMethod("getWriter");
 					aMethodgetWriter.setAccessible(Boolean.TRUE); 
-					Object aWriter = (Object) aMethodgetWriter.invoke(rep);
+						Object aWriter = (Object) aMethodgetWriter.invoke(rep);
 
 					Method aMethodwrite = aWriter.getClass().getDeclaredMethod("write", String.class);
 					aMethodwrite.setAccessible(Boolean.TRUE); 
@@ -306,7 +302,7 @@ public abstract class AbstractServletAspect extends AbstractOperationExecutionAs
 		finally	{
 
 			final long tout = TIME.getTime();
-			CTRLINST.newMonitoringRecord(new OperationExecutionRecord(completeURL, sessionId, traceId, tin, tout, hostname, eoi, ess));
+			CTRLINST.newMonitoringRecord(new HttpOperationExecutionRecord(completeURL, sessionId, traceId, tin, tout, hostname, eoi, ess));
 			SESSIONREGISTRY.unsetThreadLocalSessionId();
 
 			// cleanup

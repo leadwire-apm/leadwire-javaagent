@@ -176,4 +176,7 @@ public interface IMonitoringRecord extends Serializable, Comparable<IMonitoringR
 	public static interface BinaryFactory { // NOCS (name)
 		// empty marker interface
 	}
+
+	public String toJson();
+
 }

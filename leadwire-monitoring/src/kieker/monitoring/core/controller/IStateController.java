@@ -161,11 +161,18 @@ public interface IStateController {
 
 	
 	/**
-	 * returns the dns adress of rum server
+	 * returns the dns adress of apm server
 	 *  
 	 * @since 1.13
 	 */
-	String getRumServer();
+	String getapmServer();
+
+	/**
+	 * returns the dns adress of cdn server
+	 *  
+	 * @since 1.13
+	 */
+	String getCDNServer();
 
 	
 	/**
@@ -176,6 +183,13 @@ public interface IStateController {
 	
 	long getSqlThreshold();
 	
+	/**
+	 * returns the minimum threshold for method traces
+	 *  
+	 * @since 1.13
+	 */
+	
+	long getMethodThreshold();
 	
 	/**
 	 * returns the app uuid

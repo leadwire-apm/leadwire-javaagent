@@ -31,20 +31,21 @@ public class ServletAspect extends AbstractServletAspect {
 
 	/**
 	 * Default constructor.
-	 */
+	 */ 
 	public ServletAspect() {
 		// empty default constructor
 	}
 
 
 
-	
+	/*
 
 	@Override
 	@Pointcut("execution(* javax.servlet.http.HttpServlet.service(..)) && args(request,response) ")
 	public void monitoredOperation() {
 		// Aspect Declaration (MUST be empty)
 	}
+	*/
 	
 	@Override
 	@Pointcut("execution(* javax.servlet.http.HttpServlet.service(..)) && args(request,response)")

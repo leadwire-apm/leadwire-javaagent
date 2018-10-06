@@ -17,6 +17,8 @@ package kieker.common.record.controlflow;
 
 import java.nio.BufferOverflowException;
 
+import com.google.gson.Gson;
+
 import kieker.common.record.AbstractMonitoringRecord;
 import kieker.common.record.IMonitoringRecord;
 import kieker.common.record.io.IValueDeserializer;
@@ -42,6 +44,8 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 			 + TYPE_SIZE_STRING // OperationExecutionRecord.hostname
 			 + TYPE_SIZE_INT // OperationExecutionRecord.eoi
 			 + TYPE_SIZE_INT // OperationExecutionRecord.ess
+			 + TYPE_SIZE_STRING // OperationExecutionRecord.recordType
+
 	;
 	
 	public static final Class<?>[] TYPES = {
@@ -53,6 +57,9 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 		String.class, // OperationExecutionRecord.hostname
 		int.class, // OperationExecutionRecord.eoi
 		int.class, // OperationExecutionRecord.ess
+		String.class, // OperationExecutionRecord.recordType
+
+		
 	};
 	
 	/** user-defined constants. */
@@ -83,6 +90,7 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 		"hostname",
 		"eoi",
 		"ess",
+		"recordType"
 	};
 	
 	/** property declarations. */
@@ -94,6 +102,8 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 	private final String hostname;
 	private final int eoi;
 	private final int ess;
+	private final String recordType = "opex";
+
 	
 	/**
 	 * Creates a new instance of this class using the given parameters.
@@ -114,6 +124,8 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 	 *            eoi
 	 * @param ess
 	 *            ess
+	 * @param recordType
+	 *            recordType           
 	 */
 	public OperationExecutionRecord(final String operationSignature, final String sessionId, final long traceId, final long tin, final long tout, final String hostname, final int eoi, final int ess) {
 		this.operationSignature = operationSignature == null?NO_OPERATION_SIGNATURE:operationSignature;
@@ -146,6 +158,7 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 		this.hostname = (String) values[5];
 		this.eoi = (Integer) values[6];
 		this.ess = (Integer) values[7];
+
 	}
 
 	/**
@@ -169,6 +182,7 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 		this.hostname = (String) values[5];
 		this.eoi = (Integer) values[6];
 		this.ess = (Integer) values[7];
+
 	}
 
 	
@@ -185,6 +199,7 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 		this.hostname = deserializer.getString();
 		this.eoi = deserializer.getInt();
 		this.ess = deserializer.getInt();
+
 	}
 	
 	/**
@@ -203,7 +218,8 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 			this.getTout(),
 			this.getHostname(),
 			this.getEoi(),
-			this.getEss()
+			this.getEss(),
+			this.getrecordType()
 		};
 	}
 	/**
@@ -229,7 +245,11 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 		serializer.putString(this.getHostname());
 		serializer.putInt(this.getEoi());
 		serializer.putInt(this.getEss());
+		serializer.putString(this.getrecordType());
+
 	}
+		
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -284,6 +304,8 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 		if (!this.getHostname().equals(castedRecord.getHostname())) return false;
 		if (this.getEoi() != castedRecord.getEoi()) return false;
 		if (this.getEss() != castedRecord.getEss()) return false;
+		if (this.getrecordType() != castedRecord.getrecordType()) return false;
+
 		return true;
 	}
 	
@@ -324,6 +346,10 @@ public class OperationExecutionRecord extends AbstractMonitoringRecord implement
 	
 	public final int getEss() {
 		return this.ess;
+	}
+
+	public String getrecordType() {
+		return recordType;
 	}
 	
 }

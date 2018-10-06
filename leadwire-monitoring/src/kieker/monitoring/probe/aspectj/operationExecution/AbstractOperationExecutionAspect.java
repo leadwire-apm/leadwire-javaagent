@@ -45,6 +45,8 @@ public abstract class AbstractOperationExecutionAspect extends AbstractAspectJPr
 	private static final String VMNAME = CTRLINST.getHostname();
 	private static final ControlFlowRegistry CFREGISTRY = ControlFlowRegistry.INSTANCE;
 	private static final SessionRegistry SESSIONREGISTRY = SessionRegistry.INSTANCE;
+	private static final long METHOD_THRESHOLD = CTRLINST.getMethodThreshold();
+
 
 	/**
 	 * The pointcut for the monitored operations. Inheriting classes should extend the pointcut in order to find the correct executions of the methods (e.g. all
@@ -94,7 +96,10 @@ public abstract class AbstractOperationExecutionAspect extends AbstractAspectJPr
 		} finally {
 			// measure after
 			final long tout = TIME.getTime();
+			
+			if (tout-tin > METHOD_THRESHOLD ) {
 			CTRLINST.newMonitoringRecord(new OperationExecutionRecord(signature, sessionId, traceId, tin, tout, hostname, eoi, ess));
+			}
 			// cleanup
 			if (entrypoint) {
 				CFREGISTRY.unsetThreadLocalTraceId();

@@ -81,7 +81,15 @@ public class ProbeController extends AbstractController implements IProbeControl
 		super(configuration);
 		this.enabled = configuration.getBooleanProperty(ConfigurationFactory.ADAPTIVE_MONITORING_ENABLED);
 		if (this.enabled) {
-			this.configFilePathname = configuration.getPathProperty(ConfigurationFactory.ADAPTIVE_MONITORING_CONFIG_FILE);
+			
+			String adaptiveMonitoringconfigFile = System.getProperty("kieker.monitoring.adaptiveMonitoring.configFile");
+			if ( adaptiveMonitoringconfigFile == null) {
+				this.configFilePathname = configuration.getPathProperty(ConfigurationFactory.ADAPTIVE_MONITORING_CONFIG_FILE);
+				}
+			else {
+				this.configFilePathname =  configuration.getPathProperty(adaptiveMonitoringconfigFile);
+			}
+			
 			this.configFileUpdate = configuration.getBooleanProperty(ConfigurationFactory.ADAPTIVE_MONITORING_CONFIG_FILE_UPDATE);
 			this.configFileReadIntervall = configuration.getIntProperty(ConfigurationFactory.ADAPTIVE_MONITORING_CONFIG_FILE_READ_INTERVALL);
 			this.maxCacheSize = configuration.getIntProperty(ConfigurationFactory.ADAPTIVE_MONITORING_MAX_CACHE_SIZE);

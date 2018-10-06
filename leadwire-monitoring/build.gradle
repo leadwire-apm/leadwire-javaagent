@@ -10,7 +10,7 @@ dependencies {
 	compile 'com.rabbitmq:amqp-client:4.2.1'
 	compile resolveLibrary('javax.jms-*.jar')
 	compile 'org.jctools:jctools-core:2.1.0'
-	compile resolveLibrary('aspectjweaver-*.jar')
+	compile resolveLibrary('aspectjweaver*.jar')
 	compile resolveLibrary('disl-2.0/disl-server.jar')
 	compile resolveLibrary('sigar/sigar-*.jar')
 

@@ -17,6 +17,8 @@ package kieker.common.record.flow.trace.concurrency.monitor;
 
 import java.nio.BufferOverflowException;
 
+import com.google.gson.Gson;
+
 import kieker.common.record.flow.trace.concurrency.monitor.AbstractMonitorEvent;
 import kieker.common.record.io.IValueDeserializer;
 import kieker.common.record.io.IValueSerializer;
@@ -194,6 +196,14 @@ public class MonitorExitEvent extends AbstractMonitorEvent  {
 		if (this.getOrderIndex() != castedRecord.getOrderIndex()) return false;
 		if (this.getLockId() != castedRecord.getLockId()) return false;
 		return true;
+	}
+
+	@Override
+	public String toJson()   {
+
+		Gson gson = new Gson();
+		return gson.toJson(this);  
+
 	}
 	
 }

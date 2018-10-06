@@ -38,9 +38,10 @@ public final class StateController extends AbstractController implements IStateC
 	private final AtomicInteger experimentId = new AtomicInteger(0);
 	private final boolean debug;
 	private boolean rumEnable;
-	private final String rumServer;
-	private final String appUuid;
+	private final String apmServer;
+	private final String cdnServer;
 	private final long sqlThreshold;
+	private final long  methodThreshold;
 	private boolean jvmSamplingEnabled;
 	private boolean systemSamplingEnabled;
 	private final long samplingPeriod;
@@ -65,10 +66,11 @@ public final class StateController extends AbstractController implements IStateC
 		this.experimentId.set(configuration.getIntProperty(ConfigurationFactory.EXPERIMENT_ID));
 		this.monitoringEnabled = configuration.getBooleanProperty(ConfigurationFactory.MONITORING_ENABLED);
 		this.debug = configuration.getBooleanProperty(ConfigurationFactory.DEBUG);
-		this.rumServer = configuration.getStringProperty(ConfigurationFactory.RUM_SERVER);
-		this.appUuid = configuration.getStringProperty(ConfigurationFactory.APP_UUID);
+		this.apmServer = configuration.getStringProperty(ConfigurationFactory.APM_SERVER);
+		this.cdnServer = configuration.getStringProperty(ConfigurationFactory.CDN_SERVER);
 		this.rumEnable = configuration.getBooleanProperty(ConfigurationFactory.RUM_ENABLE);
 		this.sqlThreshold= configuration.getIntProperty(ConfigurationFactory.SQL_THRESHOLD);
+		this.methodThreshold= configuration.getIntProperty(ConfigurationFactory.METHOD_THRESHOLD);
 		this.jvmSamplingEnabled = configuration.getBooleanProperty(ConfigurationFactory.JVM_SAMPL_ENABLE);
 		this.systemSamplingEnabled = configuration.getBooleanProperty(ConfigurationFactory.SYS_SAMPL_ENABLE);
 		this.samplingPeriod = configuration.getIntProperty(ConfigurationFactory.SAMPL_PERIOD);
@@ -115,15 +117,19 @@ public final class StateController extends AbstractController implements IStateC
 		sb.append(this.hostname);
 		sb.append("'; experimentID: '");
 		sb.append(this.getExperimentId());
+		sb.append("'; appUUID: '");
+		sb.append(this.getAppUuid());
 		if ( this.isRumEnable() ) {
 		sb.append("'; rum enabled ;'");
-		sb.append("'; RumServer: '");
-		sb.append(this.getRumServer());
+		sb.append("'; apmServer: '");
+		sb.append(this.getapmServer());
 		}else {
 		sb.append("'; rum disabled ;'");	
 		}
 		sb.append("'; sql Threshold: '");
 		sb.append(this.sqlThreshold);
+		sb.append("'; method Threshold: '");
+		sb.append(this.methodThreshold);
 		sb.append("'\n");
 		if ( this.isJVMSamplingEnabled()) {
 		sb.append("'; jvm Sampling enabled ;'");
@@ -234,18 +240,20 @@ public final class StateController extends AbstractController implements IStateC
 	}
 
 	@Override
-	public String getRumServer() {
-		return rumServer;
+	public String getapmServer() {
+		return apmServer;
+	}
+	
+	@Override
+	public String getCDNServer() {
+		return cdnServer;
 	}
 	
 	@Override
 	public String getAppUuid() {
 		
-		String value=System.getProperty("leadwire.agent.name");
-		if (value != null && !value.equals(""))
-		return value;
-		else
-		return appUuid;
+		return System.getProperty("leadwire.agent.name");
+
 	}
 
 	@Override
@@ -263,6 +271,11 @@ public final class StateController extends AbstractController implements IStateC
 	public long getSqlThreshold() {
 		return sqlThreshold;
 	}
+	
+	public long getMethodThreshold() {
+		return methodThreshold;
+	}
+	
 
 	public boolean isJVMSamplingEnabled() {
 		return jvmSamplingEnabled;

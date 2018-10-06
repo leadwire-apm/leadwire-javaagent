@@ -44,10 +44,17 @@ public class JavassistGenerator {
             }
 		 
 	    Class<?> aClassHttpServletResponseWrapper = Class.forName("javax.servlet.http.HttpServletResponseWrapper", true, cl);
+		// Class<?> aClassHttpServletResponseWrapper = cl.loadClass("javax.servlet.http.HttpServletResponseWrapper");	 
+        ClassClassPath aClassClassPath = new ClassClassPath(aClassHttpServletResponseWrapper);
+		pool.insertClassPath(aClassClassPath);
 
 		cc.setSuperclass(resolveCtClass(aClassHttpServletResponseWrapper));
 
 		Class<?> aClassServletOutputStream = Class.forName("javax.servlet.ServletOutputStream", true, cl);
+		// Class<?> aClassServletOutputStream = cl.loadClass("javax.servlet.ServletOutputStream");	 
+		ClassClassPath aClassClassPath2 = new ClassClassPath(aClassServletOutputStream);
+		pool.insertClassPath(aClassClassPath2);
+
 		Class<?> aFieldcapture = java.io.ByteArrayOutputStream.class;
 		Class<?> aFieldoutput = aClassServletOutputStream;
 		Class<?> aFieldwriter = java.io.PrintWriter.class;
@@ -57,8 +64,9 @@ public class JavassistGenerator {
 		cc.addField(new CtField(resolveCtClass(aFieldwriter), "writer", cc));
 
 		Class<?> aClassHttpServletResponse = Class.forName("javax.servlet.http.HttpServletResponse", true, cl);
-		ClassClassPath ccpr = new ClassClassPath(aClassHttpServletResponse);
-		pool.insertClassPath(ccpr);
+		//Class<?> aClassHttpServletResponse = cl.loadClass("javax.servlet.http.HttpServletResponse");	 
+		ClassClassPath aClassClassPath3 = new ClassClassPath(aClassHttpServletResponse);
+		pool.insertClassPath(aClassClassPath3);
 				 
 		CtConstructor defaultConstructor = CtNewConstructor.make("public " + cc.getSimpleName() + "(javax.servlet.http.HttpServletResponse rep) {super(rep); capture = new java.io.ByteArrayOutputStream(((javax.servlet.http.HttpServletResponse) rep).getBufferSize());}", cc);
 	    cc.addConstructor(defaultConstructor);
@@ -160,7 +168,42 @@ public class JavassistGenerator {
 	}
 
 
-	public static Class<?> generatecustomServletOutputStream(String string, ClassLoader cl) throws ClassNotFoundException, CannotCompileException, NotFoundException {
+	public static Class<?> generatecustomServletOutputStream(String className, ClassLoader cl) throws ClassNotFoundException, CannotCompileException, NotFoundException {
+		ClassPool pool = ClassPool.getDefault();
+		CtClass cc ;
+		 try {
+			cc = pool.get (className); 
+			cc.defrost();
+			cc.stopPruning(true);
+			return cc.toClass(cl);
+            } catch (NotFoundException e) {
+            cc = pool.makeClass(className);
+            }
+		 Class<?> aClassServletOutputStream = Class.forName("javax.servlet.ServletOutputStream", true, cl);
+    		//Class<?> aClassServletOutputStream = cl.loadClass("javax.servlet.ServletOutputStream");	 
+
+			ClassClassPath aClassClassPath1 = new ClassClassPath(aClassServletOutputStream);
+			pool.insertClassPath(aClassClassPath1);
+			 
+			cc.setSuperclass(resolveCtClass(aClassServletOutputStream));
+			 Class<?> aFieldcapture = java.io.ByteArrayOutputStream.class;
+
+			 cc.addField(new CtField(resolveCtClass(aFieldcapture), "capture", cc));
+				 CtConstructor defaultConstructor = CtNewConstructor.make("public customServletOutputStream(java.io.ByteArrayOutputStream pCapture){\r\n" + 
+				 		"		super();\r\n" + 
+				 		"		capture=pCapture;\r\n" + 
+				 		"		}", cc);
+				 cc.addConstructor(defaultConstructor);
+			      
+				 cc.addMethod(generate_write(cc));
+				 cc.addMethod(generate_flush(cc));
+				 cc.addMethod(generate_close(cc));
+				 return cc.toClass(cl);
+       
+		 
+	}
+	
+	public static Class<?> generatecustomServletOutputStream_old(String string, ClassLoader cl) throws ClassNotFoundException, CannotCompileException, NotFoundException {
 		ClassPool pool = ClassPool.getDefault();
 		CtClass acustomServletOutputStream;
 		 try {
@@ -170,6 +213,8 @@ public class JavassistGenerator {
            	acustomServletOutputStream = pool.makeClass("kieker.monitoring.probe.aspectj.leadwire.javassist.customServletOutputStream");
 
 				Class<?> aClassServletOutputStream = Class.forName("javax.servlet.ServletOutputStream", true, cl);
+           		//Class<?> aClassServletOutputStream = cl.loadClass("javax.servlet.ServletOutputStream");	 
+	
 				ClassClassPath aClassClassPath1 = new ClassClassPath(aClassServletOutputStream);
 				pool.insertClassPath(aClassClassPath1);
 				 
@@ -186,7 +231,7 @@ public class JavassistGenerator {
 				acustomServletOutputStream.addMethod(generate_write(acustomServletOutputStream));
 				acustomServletOutputStream.addMethod(generate_flush(acustomServletOutputStream));
 				acustomServletOutputStream.addMethod(generate_close(acustomServletOutputStream));
-				acustomServletOutputStream.toClass();
+				acustomServletOutputStream.toClass(cl);
               
            }
 		return null;

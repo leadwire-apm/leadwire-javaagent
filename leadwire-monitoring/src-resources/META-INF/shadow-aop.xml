@@ -1,0 +1,30 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.aspectj.org/dtd/aspectj_1_5_0.dtd">
+<aspectj>
+  <weaver options="-Xset:weaveJavaxPackages=true">
+    <!-- Example instrumentation for the myBatis JPetStore -->
+    
+    <include within="org.squashtest.csp.core.bugtracker.service.BugTrackersServiceImpl" /> 
+        
+    <!-- Servlet api  --> 
+    <include within="javax.servlet.http.HttpServlet"/>  
+
+    <!-- JDBC Drivers -->
+    <include within="org.h2..*"/>
+    <include within="com.mysql.jdbc..*"/>
+    <include within="org.mariadb.jdbc..*"/>
+    <include within="org.postgresql.jdbc..*"/>
+    <include within="com.microsoft.sqlserver.jdbc..*"/>
+    <include within="oracle.jdbc..*"/>
+	<include within="net.sf.log4jdbc..*"/>
+	<include within="jdbc.gupta.sqlbase..*"/>
+	
+
+  </weaver>  
+  <aspects>
+    <!-- Use the aspect directives to specify the aspect(s) to use. -->
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.OperationExecutionAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.ServletAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcAspect"/>
+    
+  </aspects>
+</aspectj>
