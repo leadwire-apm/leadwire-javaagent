@@ -750,7 +750,11 @@ task aspectJJar(type: com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
         zipTree(it)
     }
   
+     from fileTree(dir: 'lib', include: 'google-collections-1.0*.jar').collect {
+              relocate 'com.google', 'shadow.com.google'
     
+        zipTree(it)
+    }
     
    
     

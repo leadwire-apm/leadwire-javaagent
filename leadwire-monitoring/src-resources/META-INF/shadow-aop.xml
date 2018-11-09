@@ -24,7 +24,10 @@
     <!-- Use the aspect directives to specify the aspect(s) to use. -->
     <aspect name="kieker.monitoring.probe.aspectj.leadwire.OperationExecutionAspect"/>
     <aspect name="kieker.monitoring.probe.aspectj.leadwire.ServletAspect"/>
-    <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcConnectionAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcStatementAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcPreparedStatementAspect"/>
+    
     
   </aspects>
 </aspectj>

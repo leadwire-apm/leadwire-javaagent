@@ -16,6 +16,8 @@
 
 package kieker.monitoring.core.controller;
 
+import java.util.Map;
+
 /**
  * @author Jan Waller, Robert von Massow
  *
@@ -50,4 +52,6 @@ public interface IMonitoringController extends
 	 * @since 1.7
 	 */
 	public boolean sendMetadataAsRecord();
+
+	Map<Object, String> getStatementSqlMap();
 }

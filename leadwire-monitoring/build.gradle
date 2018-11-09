@@ -6,6 +6,7 @@ dependencies {
 	
 	compile resolveLibrary('http*.jar')
 	compile resolveLibrary('javassist*.jar')
+	compile resolveLibrary('google-collections-1.0*.jar')
 	
 	compile 'com.rabbitmq:amqp-client:4.2.1'
 	compile resolveLibrary('javax.jms-*.jar')
@@ -62,6 +63,7 @@ task iajc(dependsOn: classes) {
             	fileset(dir: '../lib', includes: "javassist*.jar")
             	fileset(dir: '../lib', includes: "aspectjweaver-*.jar")
                 fileset(dir: '../lib', includes: "aspectjrt-*.jar")
+				fileset(dir: '../lib', includes: "google-collections-1.0*.jar")
 				fileset(dir: '../lib/framework-libs', includes: "javax.servlet-*.jar")
                 fileset(dir: '../lib/framework-libs', includes: "jsr311-api-1.1.1.jar")
                 fileset(dir: '../lib/framework-libs', includes: "javax.ws.rs-api-2.0.1.jar")

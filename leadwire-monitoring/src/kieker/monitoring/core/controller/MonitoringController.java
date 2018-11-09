@@ -17,8 +17,13 @@
 package kieker.monitoring.core.controller;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
+
+import com.google.common.collect.MapMaker;
 
 import kieker.common.configuration.Configuration;
 import kieker.common.logging.Log;
@@ -60,6 +65,8 @@ private final JMXController jmxController;
 private final WriterController writerController;
 private final TimeSourceController timeSourceController;
 private final ProbeController probeController;
+private final Map<Object, String> statementSqlMap;
+
 /** Whether or not the {@link IMonitoringRecord#setLoggingTimestamp(long)} is automatically set. */
 private final boolean autoSetLoggingTimestamp;
 
@@ -74,6 +81,9 @@ private MonitoringController(final Configuration configuration) {
 	this.timeSourceController = new TimeSourceController(configuration);
 	this.probeController = new ProbeController(configuration);
 	this.autoSetLoggingTimestamp = configuration.getBooleanProperty(ConfigurationFactory.AUTO_SET_LOGGINGTSTAMP);
+	//this.statementSqlMap = Collections.synchronizedMap(new WeakHashMap<Object, String>());
+	this.statementSqlMap = new MapMaker().concurrencyLevel(16).weakKeys().makeMap();
+
 	 
 }
 
@@ -485,6 +495,12 @@ private static final class LazyHolder { // NOCS
 	public String getAppUuid() {
 		return this.stateController.getAppUuid();
 	}
+
+	@Override
+	public Map<Object, String> getStatementSqlMap() {
+		return statementSqlMap;
+	}
+	
 	
 
 }
