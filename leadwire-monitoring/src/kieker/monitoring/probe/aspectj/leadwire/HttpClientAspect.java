@@ -102,7 +102,7 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 		
 		
 		
-		//check if header contains 
+		//check if header contains  
 		boolean containsRequestHeader = false;
 		Method aMethodcontainsHeader = req.getClass().getMethod("containsHeader", String.class);
 		aMethodcontainsHeader.setAccessible(Boolean.TRUE); 
