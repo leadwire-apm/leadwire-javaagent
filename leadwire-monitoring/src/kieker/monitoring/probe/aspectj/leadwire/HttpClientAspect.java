@@ -108,9 +108,9 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 		
 		if (!containsRequestHeader) {
 
-			final String requestHeader = Long.toString(traceId) + "," + sessionId + "," + Integer.toString(eoi) + "," + Integer.toString(nextESS);
+			String requestHeader = Long.toString(traceId) + "," + sessionId + "," + Integer.toString(eoi) + "," + Integer.toString(nextESS);
 			
-			Method aMethodaddHeader = req.getClass().getMethod("addHeader");
+			Method aMethodaddHeader = req.getClass().getMethod("addHeader", String.class, String.class);
 			aMethodaddHeader.setAccessible(Boolean.TRUE); 
 			aMethodaddHeader.invoke(req, HttpClientHeaderConstants.OPERATION_EXECUTION_HTTPCLIENT_HEADER, requestHeader  );
 
