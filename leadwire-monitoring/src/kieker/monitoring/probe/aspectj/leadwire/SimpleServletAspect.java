@@ -69,7 +69,7 @@ public class SimpleServletAspect extends AbstractAspectJProbe {
 
 		
 		// collect data
-				boolean entrypoint;
+				boolean entrypoint = false;
 				String hostname = VMNAME;
 				String sessionId = SESSIONREGISTRY.recallThreadLocalSessionId();
 				int eoi; // this is executionOrderIndex-th execution in this trace

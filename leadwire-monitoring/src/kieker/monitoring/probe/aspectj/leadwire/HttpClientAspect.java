@@ -53,7 +53,7 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 
 
 	@Around("execution(org.apache.http.client.methods.CloseableHttpResponse org.apache.http.impl.execchain.ClientExecChain.execute(org.apache.http.conn.routing.HttpRoute, org.apache.http.client.methods.HttpRequestWrapper, org.apache.http.client.protocol.HttpClientContext, org.apache.http.client.methods.HttpExecutionAware))")
-	public Object servletservice1(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
+	public Object httpexecute(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
 		if (!CTRLINST.isMonitoringEnabled()) {
 			return thisJoinPoint.proceed();
 		}
@@ -66,6 +66,10 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 		
 		final Object req = (Object) thisJoinPoint.getArgs()[1];
 
+		if( ! req.getClass().getName().equals("org.apache.http.client.methods.HttpRequestWrapper") ){
+			return thisJoinPoint.proceed();
+		}
+		
 		boolean entrypoint = true;
 		final String hostname = VMNAME;
 		final String sessionId = SESSIONREGISTRY.recallThreadLocalSessionId();
@@ -93,11 +97,15 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 		}
 		
 		
+		
+		
 		//check if header contains 
+		boolean containsRequestHeader = false;
 		Method aMethodcontainsHeader = req.getClass().getMethod("containsHeader");
 		aMethodcontainsHeader.setAccessible(Boolean.TRUE); 
-		final boolean containsRequestHeader = (boolean) aMethodcontainsHeader.invoke(req, HttpClientHeaderConstants.OPERATION_EXECUTION_HTTPCLIENT_HEADER );
-				
+		containsRequestHeader = (boolean) aMethodcontainsHeader.invoke(req, HttpClientHeaderConstants.OPERATION_EXECUTION_HTTPCLIENT_HEADER );
+		
+		
 		if (!containsRequestHeader) {
 
 			final String requestHeader = Long.toString(traceId) + "," + sessionId + "," + Integer.toString(eoi) + "," + Integer.toString(nextESS);
