@@ -1,5 +1,5 @@
 /***************************************************************************
- * Copyright 2018 Lead Wire (https://leadwire.io)
+ * Copyright 2015 Kieker Project (http://kieker-monitoring.net)
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,32 +16,15 @@
 
 package kieker.monitoring.probe.aspectj.leadwire;
 
-
-
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
-
 /**
- * @author Wassim DHIB
- * 
+ * This interface contains constants for the jersey header.
+ *
+ * @author Wassim Dhib
+ *
  * @since 1.13
  */
-@Aspect
-public class ServletAspect extends AbstractServletAspect {
+public interface HttpClientHeaderConstants { // NOPMD NOCS (constants interface)
 
-	/**
-	 * Default constructor.
-	 */ 
-	public ServletAspect() {
-		// empty default constructor
-	}
-
-	
-	@Override
-	@Pointcut("execution(* javax.servlet.http.HttpServlet.service(..)) && args(request,response)")
-	public void monitoredServletservice(final javax.servlet.http.HttpServletRequest request, final javax.servlet.http.HttpServletResponse response) {
-	}
-	
-	
+	public static final String OPERATION_EXECUTION_HTTPCLIENT_HEADER = "OperationExecutionHttpClientHeader";
 
 }

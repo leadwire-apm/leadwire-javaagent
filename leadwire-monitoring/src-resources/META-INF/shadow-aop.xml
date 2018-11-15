@@ -7,6 +7,9 @@
         
     <!-- Servlet api  --> 
     <include within="javax.servlet.http.HttpServlet"/>  
+    
+    <!-- Http Client api  --> 
+    <include within="org.apache.http.impl.execchain..*"/> 
 
     <!-- JDBC Drivers -->
     <include within="org.h2..*"/>
@@ -23,7 +26,8 @@
   <aspects>
     <!-- Use the aspect directives to specify the aspect(s) to use. -->
     <aspect name="kieker.monitoring.probe.aspectj.leadwire.OperationExecutionAspect"/>
-    <aspect name="kieker.monitoring.probe.aspectj.leadwire.ServletAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.SimpleServletAspect"/>
+    <aspect name="kieker.monitoring.probe.aspectj.leadwire.HttpClientAspect"/>
     <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcConnectionAspect"/>
     <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcStatementAspect"/>
     <aspect name="kieker.monitoring.probe.aspectj.leadwire.JdbcPreparedStatementAspect"/>
