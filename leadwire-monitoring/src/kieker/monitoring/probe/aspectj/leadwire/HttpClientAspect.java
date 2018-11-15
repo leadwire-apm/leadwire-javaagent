@@ -66,9 +66,9 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 		
 		final Object req = (Object) thisJoinPoint.getArgs()[1];
 
-		if( ! req.getClass().getName().equals("org.apache.http.client.methods.HttpRequestWrapper") ){
-			return thisJoinPoint.proceed();
-		}
+		//if( ! req.getClass().getName().equals("org.apache.http.client.methods.HttpRequestWrapper") ){
+			//return thisJoinPoint.proceed();
+		//}
 		
 		boolean entrypoint = true;
 		final String hostname = VMNAME;
@@ -101,7 +101,7 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 		
 		//check if header contains 
 		boolean containsRequestHeader = false;
-		Method aMethodcontainsHeader = req.getClass().getMethod("containsHeader");
+		Method aMethodcontainsHeader = req.getClass().getMethod("containsHeader", String.class);
 		aMethodcontainsHeader.setAccessible(Boolean.TRUE); 
 		containsRequestHeader = (boolean) aMethodcontainsHeader.invoke(req, HttpClientHeaderConstants.OPERATION_EXECUTION_HTTPCLIENT_HEADER );
 		
