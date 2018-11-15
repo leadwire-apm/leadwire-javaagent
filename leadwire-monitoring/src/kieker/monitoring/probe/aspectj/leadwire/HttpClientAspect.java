@@ -64,7 +64,10 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 			return thisJoinPoint.proceed();
 		}
 		
-		final Object req = (Object) thisJoinPoint.getArgs()[1];
+		
+		//get call args
+		final Object[] args = thisJoinPoint.getArgs();
+		final Object req = (Object) args[1];
 
 		//if( ! req.getClass().getName().equals("org.apache.http.client.methods.HttpRequestWrapper") ){
 			//return thisJoinPoint.proceed();
@@ -122,7 +125,7 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 	Object retVal = null;
 	
 		try {
-			retVal = thisJoinPoint.proceed();
+			retVal = thisJoinPoint.proceed(args);
 		}
 		finally	{
 
