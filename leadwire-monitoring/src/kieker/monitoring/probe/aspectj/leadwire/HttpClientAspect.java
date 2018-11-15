@@ -64,7 +64,7 @@ public class HttpClientAspect extends AbstractAspectJProbe {
 			return thisJoinPoint.proceed();
 		}
 		
-		final Object req = (Object) thisJoinPoint.getArgs()[0];
+		final Object req = (Object) thisJoinPoint.getArgs()[1];
 
 		boolean entrypoint = true;
 		final String hostname = VMNAME;

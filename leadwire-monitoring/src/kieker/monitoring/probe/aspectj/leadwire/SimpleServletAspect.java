@@ -146,7 +146,6 @@ public class SimpleServletAspect extends AbstractAspectJProbe {
 			SESSIONREGISTRY.storeThreadLocalSessionId(sessionId);
 		} 
 			else if (sessionId==null) {
-				LOG.error("5");
 
 				Method aMethodgetSession = req.getClass().getMethod("getSession", boolean.class);
 				aMethodgetSession.setAccessible(Boolean.TRUE); 
