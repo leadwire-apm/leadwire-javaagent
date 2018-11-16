@@ -87,13 +87,13 @@ public class SimpleServletAspect extends AbstractAspectJProbe {
 			
 			
 			String requestHeader = null;
-			if( req.getClass().getName().equals("javax.servlet.http.HttpServletRequest") ){
+			//if( req.getClass().getName().equals("javax.servlet.http.HttpServletRequest") ){
 
 			//get request headers
 			Method aMethodgetHeader = req.getClass().getMethod("getHeader", String.class);
 			aMethodgetHeader.setAccessible(Boolean.TRUE); 
 			requestHeader = (String) aMethodgetHeader.invoke(req, HttpClientHeaderConstants.OPERATION_EXECUTION_HTTPCLIENT_HEADER );
-			}
+			//}
 			
 			if (requestHeader != null)  {
 
