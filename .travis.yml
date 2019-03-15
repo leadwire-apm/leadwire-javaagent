@@ -1,8 +1,8 @@
 language: java
 install: true
  
-dist: precise
- 
+dist: xenial
+
 sudo: required
 
 before_install:
