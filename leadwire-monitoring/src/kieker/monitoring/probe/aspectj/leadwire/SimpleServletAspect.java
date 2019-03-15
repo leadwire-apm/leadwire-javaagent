@@ -55,7 +55,7 @@ public class SimpleServletAspect extends AbstractAspectJProbe {
 
 
 
-	@Around("execution(* javax.servlet.http.HttpServlet.service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse))")
+	@Around("execution(* javax.servlet.Servlet.service(javax.servlet.ServletRequest, javax.servlet.ServletResponse))")
 	public Object servletservice(final ProceedingJoinPoint thisJoinPoint) throws Throwable { // NOCS (Throwable)
 
 		if (!CTRLINST.isMonitoringEnabled()) {
@@ -87,7 +87,6 @@ public class SimpleServletAspect extends AbstractAspectJProbe {
 			
 			
 			String requestHeader = null;
-			//if( req.getClass().getName().equals("javax.servlet.http.HttpServletRequest") ){
 
 			//get request headers
 			Method aMethodgetHeader = req.getClass().getMethod("getHeader", String.class);
